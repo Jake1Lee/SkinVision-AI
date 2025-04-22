@@ -1,0 +1,31 @@
+.navbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  z-index: 1000;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.homeButton,
+.aboutButton {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.homeButton:hover,
+.aboutButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}

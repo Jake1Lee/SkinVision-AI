@@ -1,0 +1,111 @@
+.modelList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.modelItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modelItem label {
+  color: #fff;
+  font-weight: bold;
+}
+
+.infoIcon {
+  position: relative;
+  display: inline-block;
+  color: #fff;
+  cursor: pointer;
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 400px; /* Fixed width */
+  height: 300px; /* Fixed height (4:3 aspect ratio) */
+}
+
+.modelSelectionContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modelList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.modelItem label {
+  color: #fff;
+  font-weight: bold;
+}
+
+.infoIcon {
+  position: relative;
+  display: inline-block;
+  color: #fff;
+  cursor: pointer;
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.infoIcon:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modelSelectionCard, .imageContainer {
+  width: 400px; /* Fixed width */
+  height: 300px; /* Fixed height (4:3 aspect ratio) */
+}
