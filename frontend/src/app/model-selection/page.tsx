@@ -51,12 +51,9 @@ const ModelSelection = () => {
       localStorage.setItem('selectedModel', selectedModel);
 
       if (selectedModel === 'resnet50') {
-        // For prototyping purposes, navigate to the results page with a flag
-        router.push('/results?resnet=true');
-      } else {
         try {
-          // Extract the filename from the data URL
-          const filename = 'skin_lesion.jpg'; // You might want to generate a unique filename
+          // Retrieve the filename from local storage
+          const filename = localStorage.getItem('uploadedImageName') || 'skin_lesion.jpg'; // Default filename
 
           // Send the selected model and image to the backend for analysis
           const response = await axios.post('http://localhost:5000/api/analyze', {
@@ -81,7 +78,7 @@ const ModelSelection = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
       <BackButton />
-      <div className={styles.container}>
+      <div className={styles.container} style={{ paddingTop: '20px' }}>
         {uploadedImage && (
           <GlassCard>
             <div className={styles.imageContainer}>

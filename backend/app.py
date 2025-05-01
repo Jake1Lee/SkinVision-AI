@@ -47,15 +47,19 @@ def upload_file():
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_image():
-    data = request.json
+    if not request.data:
+        return jsonify({'error': 'Empty request body'}), 400
+
+    print(request.headers)
+    data = request.get_json()
     
     if not data or 'filename' not in data or 'model' not in data:
         return jsonify({'error': 'Missing filename or model selection'}), 400
     
-    filename = data['filename']
+    original_filename = data['filename']
     model_name = data['model']
     
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], original_filename)
     
     if not os.path.exists(filepath):
         return jsonify({'error': 'File not found'}), 404
@@ -63,7 +67,7 @@ def analyze_image():
     try:
         # Process the image and get predictions
         results = predict_with_model(filepath, model_name)
-        
+        print(results)
         return jsonify({
             'success': True,
             'results': results

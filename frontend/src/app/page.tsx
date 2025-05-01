@@ -22,6 +22,33 @@ export default function Home() {
         }
       };
       reader.readAsDataURL(file);
+      uploadImage(file);
+    }
+  };
+
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        localStorage.setItem('uploadedImageName', file.name); // Store the filename
+      } else {
+        alert('Error uploading image: ' + data.error);
+      }
+    } catch (error: any) {
+      console.error('Error uploading image:', error.message);
+      alert('Error uploading image: ' + error.message);
     }
   };
 
@@ -31,7 +58,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
-      <h1 className="text-4xl font-bold mb-8 text-white">
+      <h1 className="text-4xl font-bold mb-8 text-white" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
         SkinVision AI: Upload image of skin to classify it
       </h1>
       <GlassCard>

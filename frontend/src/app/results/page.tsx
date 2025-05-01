@@ -19,13 +19,13 @@ import styles from './Results.module.css';
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+BarElement,
   Title,
   Tooltip,
   Legend
 );
 
-type TooltipMode = 'index' | 'dataset' | 'point' | 'nearest' | 'x' | 'y';
+type TooltipMode = 'index' | 'dataset' | 'point' | 'nearest' | 'x' | 'y' | undefined;
 
 const Results = () => {
   const [analysisResults, setAnalysisResults] = useState<any>(null);
@@ -33,80 +33,46 @@ const Results = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const resnet = searchParams.get('resnet');
+    const fetchData = async () => {
+      try {
+        const filename = localStorage.getItem('uploadedImageName') || 'skin_lesion.jpg';
+        const model = localStorage.getItem('selectedModel') || 'resnet50';
 
-    // Retrieve the analysis results from local storage
-    const results = localStorage.getItem('analysisResults');
+        const response = await fetch('http://localhost:5000/api/analyze', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ filename: filename, model: model }),
+        });
 
-    if (resnet === 'true' || !results) {
-      // For prototyping purposes, generate random data if ResNet is selected or no results are found
-      const randomData: any = {};
-      const labels = ['acb', 'acd', 'ajb', 'ajd', 'ak', 'alm', 'angk', 'anm', 'bcc', 'bd', 'bdb', 'cb', 'ccb', 'ccd', 'cd', 'ch', 'cjb', 'db', 'df', 'dfsp', 'ha', 'isl', 'jb', 'jd', 'ks', 'la', 'lk', 'lm', 'lmm', 'ls', 'mcb', 'mel', 'mpd', 'pg', 'rd', 'sa', 'scc', 'sk', 'sl', 'srjd'];
-
-      // Assign specific probabilities to the top predictions
-      randomData['lm'] = { name: 'lentigo_maligna', probability: 86.7 };
-      randomData['mel'] = { name: 'melanoma', probability: 4.2 };
-      randomData['bcc'] = { name: 'basal_cell_carcinoma', probability: 3.8 };
-      randomData['sk'] = { name: 'seborrheic_keratosis', probability: 2.1 };
-      randomData['nv'] = { name: 'melanocytic_nevus', probability: 1.8 };
-
-      // Assign the remaining probability to the rest of the labels
-      const remainingLabels = labels.filter(label => !(label in randomData));
-      const remainingProbability = 100 - 86.7 - 4.2 - 3.8 - 2.1 - 1.8;
-      const probabilityPerLabel = remainingProbability / remainingLabels.length;
-
-      remainingLabels.forEach(label => {
-        randomData[label] = {
-          name: label,
-          probability: probabilityPerLabel
-        };
-      });
-
-      setAnalysisResults(randomData);
-
-      let topCode = 'lm';
-      setTopPrediction({ code: topCode, probability: 86.7, name: 'lentigo_maligna' });
-    } else {
-      const parsedResults = JSON.parse(results);
-      setAnalysisResults(parsedResults);
-
-      // Find the top prediction
-      let topCode = '';
-      let topProbability = 0;
-      for (const code in parsedResults) {
-        if (parsedResults[code].probability > topProbability) {
-          topCode = code;
-          topProbability = parsedResults[topCode].probability;
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
+        setAnalysisResults(data.results.predictions);
+        setTopPrediction({ code: data.results.top_prediction.code, probability: data.results.top_prediction.probability, name: data.results.top_prediction.name });
+
+        console.log('analysisResults:', data.results.predictions);
+        console.log('topPrediction:', { code: data.results.top_prediction.code, probability: data.results.top_prediction.probability, name: data.results.top_prediction.name });
+
+      } catch (error) {
+        console.error('Error fetching analysis results:', error);
       }
-      setTopPrediction({ code: topCode, probability: topProbability, name: parsedResults[topCode].name });
-    }
+    };
+
+    fetchData();
   }, [searchParams]);
 
   const data = {
-    labels: analysisResults ? Object.keys(analysisResults) : [],
+    labels: analysisResults ? Object.keys(analysisResults).sort() : [],
     datasets: [
       {
         label: 'Probability',
         data: analysisResults ? Object.values(analysisResults).map((item: any) => item.probability) : [],
-        backgroundColor: Object.keys(analysisResults || {}).map((key, index) => {
-          if (key === 'lm') {
-            return 'orangered';
-          } else if (index < 5) {
-            return 'yellow';
-          } else {
-            return 'deepblue';
-          }
-        }),
-        borderColor: [
-          'rgb(255, 99, 132)',
-          'rgb(255, 159, 64)',
-          'rgb(255, 205, 86)',
-          'rgb(75, 192, 192)',
-          'rgb(54, 162, 235)',
-          'rgb(153, 102, 255)',
-          'rgb(201, 203, 207)',
-        ],
+        backgroundColor: 'rgba(23, 1, 105, 0.8)', // Deep blue to purple gradient
+        borderColor: 'rgba(75, 0, 130, 1)',
         borderWidth: 1,
       },
     ],
@@ -148,7 +114,7 @@ const Results = () => {
         ticks: {
           color: '#fff',
           callback: (value: number | string) => {
-            return value + '%';
+            return value;
           }
         },
         grid: {
@@ -161,30 +127,41 @@ const Results = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
       <GlassCard backButton={<BackButton />}>
-        <h1 className="text-2xl font-bold mb-4 text-white">Analysis Results</h1>
+        <h1 className="text-2xl font-bold mb-4 text-white" style={{ fontFamily: 'Red Rose', fontWeight: 600, marginTop: '20px' }}>Analysis Results</h1>
         {topPrediction && (
-          <div className="mb-4 text-white">
-            Top Prediction: {topPrediction.code} ({topPrediction.name}) - {topPrediction.probability.toFixed(2)}%
+          <div className="mb-4 text-white" style={{ fontSize: '1.1em' }}>
+            <b style={{ fontWeight: 700 }}>Top Prediction:</b> <span style={{ fontWeight: 500 }}>
+              <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{topPrediction.code}</span>
+              ({topPrediction.name}) - {topPrediction.probability.toFixed(2)}%
+            </span>
           </div>
         )}
         {analysisResults && (
-          <div className="mb-4 text-white">
-            Next Predictions:
-            <ul>
+          <div className="mb-4 text-white" style={{ fontSize: '1.1em' }}>
+            <b style={{ fontWeight: 700 }}>Next Predictions:</b>
+            <ol style={{ paddingLeft: '20px' }}>
               {Object.entries(analysisResults)
-                .sort(([, a], [, b]) => (b as any).probability - (a as any).probability)
+                .sort(([, a]: [string, any], [, b]: [string, any]) => b.probability - a.probability)
                 .slice(1, 5)
-                .map(([code, result]: [string, any]) => (
-                  <li key={code}>
-                    {code} ({result.name}) - {result.probability.toFixed(2)}%
-                  </li>
-                ))}
-            </ul>
+                .map(([code, result]: [string, any], index) => {
+                  const nameParts = result.name.split('(');
+                  const name = nameParts[0].trim();
+                  const explanation = ` (${(nameParts.length > 1 ? nameParts[1] : nameParts[0]).toLowerCase()})`;
+
+                  return (
+                    <li key={code} style={{ fontWeight: 500 }}>
+                      {index + 2}. <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{code}</span>{explanation} - {result.probability.toFixed(2)}%
+                    </li>
+                  );
+                })}
+            </ol>
           </div>
         )}
-        <div className={styles.chartContainer}>
-          <Bar data={data} options={options} />
-        </div>
+        {data.labels.length > 0 && data.datasets[0].data.length > 0 && (
+          <div className={styles.chartContainer}>
+            <Bar data={data} options={options} />
+          </div>
+        )}
       </GlassCard>
     </div>
   );
