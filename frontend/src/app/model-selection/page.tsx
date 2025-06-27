@@ -19,16 +19,48 @@ const ModelSelection = () => {
   const [models, setModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
     const fetchModels = async () => {
+      // Always use fallback models to ensure correct data
+      const fallbackModels: Model[] = [
+        {
+          id: 'resnet50',
+          name: 'ResNet50',
+          description: 'Deep residual network with excellent performance for skin lesion classification.',
+          accuracy: '72%'
+        },
+        {
+          id: 'inceptionv3',
+          name: 'InceptionV3',
+          description: 'Google\'s inception architecture with efficient feature extraction capabilities.',
+          accuracy: '51%'
+        },
+        {
+          id: 'inceptionresnetv2',
+          name: 'InceptionResNetV2',
+          description: 'Advanced hybrid model combining Inception and ResNet architectures. Currently in development.',
+          accuracy: 'In Development'
+        }
+      ];
+      
+      setModels(fallbackModels);
+      setRefreshKey(Date.now()); // Force re-render
+      
+      // Try to fetch from backend but don't override if it fails
       try {
         const response = await fetch('http://localhost:5000/api/models');
-        const data: Model[] = await response.json();
-        setModels(data);
+        if (response.ok) {
+          const data: Model[] = await response.json();
+          // Only use backend data if it has the correct models
+          if (data.length > 0 && data.some(model => model.id === 'inceptionresnetv2')) {
+            setModels(data);
+          }
+        }
       } catch (error) {
-        console.error('Error fetching models:', error);
+        console.log('Using offline mode with fallback models');
       }
     };
 
@@ -37,6 +69,9 @@ const ModelSelection = () => {
     if (image) {
       setUploadedImage(image);
     }
+
+    // Clear any cached model data
+    localStorage.removeItem('cachedModels');
 
     fetchModels();
   }, []);
@@ -64,9 +99,16 @@ const ModelSelection = () => {
         localStorage.setItem('analysisResults', JSON.stringify(response.data.results));
 
         router.push('/results'); // Navigate to the results page
-      } catch (error: any) {
-        console.error('Error analyzing image:', error.message);
-        alert('Error analyzing image: ' + error.message);
+      } catch (error: unknown) {
+        console.error('Error analyzing image:', error);
+        
+        // Check if it's a network error (backend not available)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        if (errorMessage.includes('Network Error') || errorMessage.includes('ERR_CONNECTION_REFUSED')) {
+          alert('Backend server is not running. Please start the Flask server (python app.py) in the backend folder to perform analysis.');
+        } else {
+          alert('Error analyzing image: ' + errorMessage);
+        }
       }
     } else {
       alert('Please select a model and upload an image.');
@@ -87,9 +129,9 @@ const ModelSelection = () => {
         <GlassCard className={styles.modelSelectionCard}>
           <h1 className="text-2xl font-bold mb-4 text-white">Select a Model</h1>
           <div className={styles.modelSelectionContainer}>
-            <div className={styles.modelList}>
+            <div className={styles.modelList} key={refreshKey}>
               {models.map((model) => (
-                <div key={model.id} className={styles.modelItem}>
+                <div key={`${model.id}-${refreshKey}`} className={styles.modelItem}>
                   <label>
                     <input
                       type="radio"

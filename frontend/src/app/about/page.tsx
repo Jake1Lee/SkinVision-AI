@@ -36,7 +36,7 @@ const About = () => {
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li><strong>ResNet50:</strong> A 50-layer residual network optimized for image classification with superior accuracy and stability</li>
-              <li><strong>InceptionV3:</strong> Google's inception architecture designed for efficient feature extraction and pattern recognition</li>
+              <li><strong>InceptionV3:</strong> Google&apos;s inception architecture designed for efficient feature extraction and pattern recognition</li>
               <li><strong>Advanced Classification:</strong> Capable of identifying 40+ different types of skin lesions and conditions</li>
             </ul>
           </section>
@@ -56,7 +56,7 @@ const About = () => {
           <section>
             <h2 className="text-xl font-semibold mb-3 text-white">Technical Implementation</h2>
             <p className="mb-4">
-              This PFE (Projet de Fin d'Études) encompasses the complete development lifecycle from research 
+              This PFE (Projet de Fin d&apos;Études) encompasses the complete development lifecycle from research 
               and model training to deployment and testing. The solution integrates advanced computer vision 
               techniques with a modern web application architecture, ensuring both accuracy and usability.
             </p>

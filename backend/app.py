@@ -77,27 +77,7 @@ def analyze_image():
 
 @app.route('/api/models', methods=['GET'])
 def get_models():
-    # Return information about available models
-    models = [
-        {
-            'id': 'resnet50',
-            'name': 'ResNet50',
-            'description': 'Excellent for general skin lesion classification with high accuracy on common conditions.',
-            'accuracy': '92.5%'
-        },
-        {
-            'id': 'inceptionv3',
-            'name': 'InceptionV3',
-            'description': 'Specialized in detecting subtle patterns in complex lesions, performs well on rare conditions.',
-            'accuracy': '91.8%'
-        },
-        {
-            'id': 'skinnet',
-            'name': 'SkinNet',
-            'description': 'Custom model optimized specifically for dermatological analysis with balanced performance across all lesion types.',
-            'accuracy': '94.2%'
-        }
-    ]
+    
     
     return jsonify(models)
 

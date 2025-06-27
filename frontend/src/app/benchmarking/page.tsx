@@ -79,11 +79,13 @@ const BenchmarkingPage = () => {
             
             <div className={styles.weaknesses}>
               <h4 className={styles.listTitle}>Weaknesses</h4>
-              <li>Struggles with rare classes (dfsp, ks, lmm)</li>
-              <li>Confusion between similar-looking lesion types</li>
-              <li>Overfitting tendency after ~150 epochs</li>
-              <li>Lower recall on some malignant classes</li>
-              <li>Performance plateaus in later training epochs</li>
+              <ul className={styles.list}>
+                <li>Struggles with rare classes (dfsp, ks, lmm)</li>
+                <li>Confusion between similar-looking lesion types</li>
+                <li>Overfitting tendency after ~150 epochs</li>
+                <li>Lower recall on some malignant classes</li>
+                <li>Performance plateaus in later training epochs</li>
+              </ul>
             </div>
           </div>
           
@@ -183,7 +185,7 @@ const BenchmarkingPage = () => {
             <div className={styles.infoIcon}>
               <FaInfoCircle />
               <span className={styles.tooltip}>
-                The training metrics show the model's performance over 250 epochs. The graphs display accuracy, 
+                The training metrics show the model&apos;s performance over 250 epochs. The graphs display accuracy, 
                 precision, recall, and F1 score metrics, as well as training and validation loss.
               </span>
             </div>
@@ -233,7 +235,7 @@ const BenchmarkingPage = () => {
             <div className={styles.infoIcon}>
               <FaInfoCircle />
               <span className={styles.tooltip}>
-                The training metrics show the model's performance over just 2 epochs. Despite the limited training,
+                The training metrics show the model&apos;s performance over just 2 epochs. Despite the limited training,
                 the graphs show promising trends in accuracy, precision, recall, and F1 score metrics.
               </span>
             </div>
@@ -414,7 +416,7 @@ const BenchmarkingPage = () => {
           <p>
             Based on our benchmarking analysis, ResNet50 currently outperforms InceptionV3 for skin lesion classification, 
             achieving higher accuracy, precision, and F1 scores. However, this comparison is not entirely fair as the 
-            InceptionV3 model was significantly undertrained with only 2 epochs compared to ResNet50's 250 epochs.
+            InceptionV3 model was significantly undertrained with only 2 epochs compared to ResNet50&apos;s 250 epochs.
           </p>
           <p>
             Both models show strengths and weaknesses in classifying different types of skin lesions. ResNet50 performs 

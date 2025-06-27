@@ -7,23 +7,29 @@ import styles from './Home.module.css';
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const router = useRouter();
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedImage(file);
-      // Store the image in local storage
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (reader.result) {
-          localStorage.setItem('uploadedImage', reader.result as string);
-          router.push('/model-selection');
-        }
-      };
-      reader.readAsDataURL(file);
-      uploadImage(file);
+      proceedWithImageUpload(file);
     }
+  };
+
+  const proceedWithImageUpload = (file: File) => {
+    setUploading(true);
+    // Store the image in local storage
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.result) {
+        localStorage.setItem('uploadedImage', reader.result as string);
+        router.push('/model-selection');
+      }
+    };
+    reader.readAsDataURL(file);
+    uploadImage(file);
   };
 
   const uploadImage = async (file: File) => {
@@ -42,13 +48,16 @@ export default function Home() {
 
       const data = await response.json();
       if (data.success) {
-        localStorage.setItem('uploadedImageName', file.name); // Store the filename
+        localStorage.setItem('uploadedImageName', file.name);
       } else {
         alert('Error uploading image: ' + data.error);
       }
-    } catch (error: any) {
-      console.error('Error uploading image:', error.message);
-      alert('Error uploading image: ' + error.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error uploading image:', errorMessage);
+      alert('Error uploading image: ' + errorMessage);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -71,12 +80,14 @@ export default function Home() {
           accept="image/*"
           onChange={handleImageUpload}
           style={{ display: 'none' }}
+          disabled={uploading}
         />
         <button
           className={`${styles.uploadButton} bg-white text-purple-800 font-bold py-6 px-8 rounded-xl focus:outline-none focus:shadow-outline text-2xl`}
           onClick={handleUploadButtonClick}
+          disabled={uploading}
         >
-          Upload Image
+          {uploading ? 'Uploading...' : 'Upload Image'}
         </button>
         {selectedImage && (
           <div className="mt-4">

@@ -1,17 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
   title: "Skin Lesion Detection App",
@@ -30,16 +20,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Red+Rose:wght@300..700&display=swap" rel="stylesheet" />
       </head>
-      <body
-        className={`antialiased`}
+      <body 
+        className="antialiased"
         style={{ 
-          // backgroundColor: '#966fd6'
           backgroundColor: '#d7d7e7', 
           fontFamily: 'Dosis', 
-          fontWeight: 400 }}
+          fontWeight: 400 
+        }}
       >
-        <Navbar />
-        {children}
+        <AuthProvider>
+          <Navbar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

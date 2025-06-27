@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "SkinVision-AI"
+location: "europe-southwest1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "skinvision-ai-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

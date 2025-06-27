@@ -1,0 +1,299 @@
+[debug] [2025-06-27T17:46:18.120Z] ----------------------------------------------------------------------
+[debug] [2025-06-27T17:46:18.127Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2025-06-27T17:46:18.128Z] CLI Version:   14.9.0
+[debug] [2025-06-27T17:46:18.128Z] Platform:      win32
+[debug] [2025-06-27T17:46:18.128Z] Node Version:  v20.14.0
+[debug] [2025-06-27T17:46:18.128Z] Time:          Fri Jun 27 2025 18:46:18 GMT+0100 (GMT+01:00)
+[debug] [2025-06-27T17:46:18.129Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-06-27T17:46:18.142Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-06-27T17:46:18.143Z] > authorizing via signed-in user (mdaminefr@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\JakeLee\Desktop\PFE\App\SkinVision-AI
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-06-27T17:46:54.075Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:46:54.075Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:46:54.079Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-06-27T17:46:54.692Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-06-27T17:46:54.693Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project skinvision-ai-cc1af (SkinVision-AI) 
+[info] 
+=== Dataconnect Setup
+[debug] [2025-06-27T17:48:06.654Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:06.654Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:06.654Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/skinvision-ai-cc1af/billingInfo [none]
+[debug] [2025-06-27T17:48:07.037Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/skinvision-ai-cc1af/billingInfo 200
+[debug] [2025-06-27T17:48:07.038Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/skinvision-ai-cc1af/billingInfo {"name":"projects/skinvision-ai-cc1af/billingInfo","projectId":"skinvision-ai-cc1af","billingAccountName":"billingAccounts/016097-1073AF-A88539","billingEnabled":true}
+[info] i  dataconnect: ensuring required API firebasedataconnect.googleapis.com is enabled... 
+[debug] [2025-06-27T17:48:07.040Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:07.040Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:07.040Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com [none]
+[debug] [2025-06-27T17:48:07.040Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:48:08.021Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com 200
+[debug] [2025-06-27T17:48:08.021Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com [omitted]
+[warn] !  dataconnect: missing required API firebasedataconnect.googleapis.com. Enabling now... 
+[debug] [2025-06-27T17:48:08.023Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:08.023Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:08.023Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com:enable [none]
+[debug] [2025-06-27T17:48:08.023Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com:enable x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:48:08.719Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com:enable 200
+[debug] [2025-06-27T17:48:08.719Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firebasedataconnect.googleapis.com:enable [omitted]
+[info] i  dataconnect: ensuring required API sqladmin.googleapis.com is enabled... 
+[debug] [2025-06-27T17:48:18.739Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:18.739Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:18.740Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com [none]
+[debug] [2025-06-27T17:48:18.740Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:48:19.770Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com 200
+[debug] [2025-06-27T17:48:19.770Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com [omitted]
+[warn] !  dataconnect: missing required API sqladmin.googleapis.com. Enabling now... 
+[debug] [2025-06-27T17:48:19.771Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:19.771Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:19.771Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com:enable [none]
+[debug] [2025-06-27T17:48:19.771Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com:enable x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:48:20.962Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com:enable 200
+[debug] [2025-06-27T17:48:20.962Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/sqladmin.googleapis.com:enable [omitted]
+[info] i  dataconnect: ensuring required API compute.googleapis.com is enabled... 
+[debug] [2025-06-27T17:48:30.979Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:30.979Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:30.979Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com [none]
+[debug] [2025-06-27T17:48:30.979Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:48:32.231Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com 200
+[debug] [2025-06-27T17:48:32.232Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com [omitted]
+[warn] !  dataconnect: missing required API compute.googleapis.com. Enabling now... 
+[debug] [2025-06-27T17:48:32.232Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:32.233Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:32.233Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com:enable [none]
+[debug] [2025-06-27T17:48:32.233Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com:enable x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:48:33.033Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com:enable 200
+[debug] [2025-06-27T17:48:33.033Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/compute.googleapis.com:enable [omitted]
+[debug] [2025-06-27T17:48:43.048Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:43.048Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:43.048Z] >>> [apiv2][query] GET https://firebasedataconnect.googleapis.com/v1/projects/skinvision-ai-cc1af/locations/-/services [none]
+[debug] [2025-06-27T17:48:44.226Z] <<< [apiv2][status] GET https://firebasedataconnect.googleapis.com/v1/projects/skinvision-ai-cc1af/locations/-/services 200
+[debug] [2025-06-27T17:48:44.226Z] <<< [apiv2][body] GET https://firebasedataconnect.googleapis.com/v1/projects/skinvision-ai-cc1af/locations/-/services {}
+[debug] [2025-06-27T17:48:57.067Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:57.067Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:48:57.067Z] >>> [apiv2][query] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances [none]
+[debug] [2025-06-27T17:48:58.096Z] <<< [apiv2][status] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances 200
+[debug] [2025-06-27T17:48:58.096Z] <<< [apiv2][body] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances {}
+[debug] [2025-06-27T17:49:01.579Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:01.579Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:01.580Z] >>> [apiv2][query] GET https://firebasedataconnect.googleapis.com/v1/projects/skinvision-ai-cc1af/locations [none]
+[debug] [2025-06-27T17:49:02.424Z] <<< [apiv2][status] GET https://firebasedataconnect.googleapis.com/v1/projects/skinvision-ai-cc1af/locations 200
+[debug] [2025-06-27T17:49:02.424Z] <<< [apiv2][body] GET https://firebasedataconnect.googleapis.com/v1/projects/skinvision-ai-cc1af/locations {"locations":[{"name":"projects/skinvision-ai-cc1af/locations/asia-east1","locationId":"asia-east1","displayName":"Taiwan"},{"name":"projects/skinvision-ai-cc1af/locations/asia-east2","locationId":"asia-east2","displayName":"Hong Kong"},{"name":"projects/skinvision-ai-cc1af/locations/asia-northeast1","locationId":"asia-northeast1","displayName":"Tokyo"},{"name":"projects/skinvision-ai-cc1af/locations/asia-northeast2","locationId":"asia-northeast2","displayName":"Osaka"},{"name":"projects/skinvision-ai-cc1af/locations/asia-northeast3","locationId":"asia-northeast3","displayName":"Seoul"},{"name":"projects/skinvision-ai-cc1af/locations/asia-south1","locationId":"asia-south1","displayName":"Mumbai"},{"name":"projects/skinvision-ai-cc1af/locations/asia-southeast1","locationId":"asia-southeast1","displayName":"Singapore"},{"name":"projects/skinvision-ai-cc1af/locations/asia-southeast2","locationId":"asia-southeast2","displayName":"Jakarta"},{"name":"projects/skinvision-ai-cc1af/locations/australia-southeast1","locationId":"australia-southeast1","displayName":"Sydney"},{"name":"projects/skinvision-ai-cc1af/locations/australia-southeast2","locationId":"australia-southeast2","displayName":"Melbourne"},{"name":"projects/skinvision-ai-cc1af/locations/europe-central2","locationId":"europe-central2","displayName":"Warsaw"},{"name":"projects/skinvision-ai-cc1af/locations/europe-north1","locationId":"europe-north1","displayName":"Finland"},{"name":"projects/skinvision-ai-cc1af/locations/europe-southwest1","locationId":"europe-southwest1","displayName":"Madrid"},{"name":"projects/skinvision-ai-cc1af/locations/europe-west1","locationId":"europe-west1","displayName":"Belgium"},{"name":"projects/skinvision-ai-cc1af/locations/europe-west2","locationId":"europe-west2","displayName":"London"},{"name":"projects/skinvision-ai-cc1af/locations/europe-west3","locationId":"europe-west3","displayName":"Frankfurt"},{"name":"projects/skinvision-ai-cc1af/locations/europe-west4","locationId":"europe-west4","displayName":"Netherlands"},{"name":"projects/skinvision-ai-cc1af/locations/europe-west6","locationId":"europe-west6","displayName":"Zurich"},{"name":"projects/skinvision-ai-cc1af/locations/europe-west8","locationId":"europe-west8","displayName":"Milan"},{"name":"projects/skinvision-ai-cc1af/locations/europe-west9","locationId":"europe-west9","displayName":"Paris"},{"name":"projects/skinvision-ai-cc1af/locations/me-west1","locationId":"me-west1","displayName":"Tel Aviv"},{"name":"projects/skinvision-ai-cc1af/locations/northamerica-northeast1","locationId":"northamerica-northeast1","displayName":"Montréal"},{"name":"projects/skinvision-ai-cc1af/locations/northamerica-northeast2","locationId":"northamerica-northeast2","displayName":"Toronto"},{"name":"projects/skinvision-ai-cc1af/locations/southamerica-east1","locationId":"southamerica-east1","displayName":"São Paulo"},{"name":"projects/skinvision-ai-cc1af/locations/southamerica-west1","locationId":"southamerica-west1","displayName":"Santiago"},{"name":"projects/skinvision-ai-cc1af/locations/us-central1","locationId":"us-central1","displayName":"Iowa"},{"name":"projects/skinvision-ai-cc1af/locations/us-east1","locationId":"us-east1","displayName":"South Carolina"},{"name":"projects/skinvision-ai-cc1af/locations/us-east4","locationId":"us-east4","displayName":"Northern Virginia"},{"name":"projects/skinvision-ai-cc1af/locations/us-south1","locationId":"us-south1","displayName":"Dallas"},{"name":"projects/skinvision-ai-cc1af/locations/us-west1","locationId":"us-west1","displayName":"Oregon"},{"name":"projects/skinvision-ai-cc1af/locations/us-west2","locationId":"us-west2","displayName":"Los Angeles"},{"name":"projects/skinvision-ai-cc1af/locations/us-west3","locationId":"us-west3","displayName":"Salt Lake City"},{"name":"projects/skinvision-ai-cc1af/locations/us-west4","locationId":"us-west4","displayName":"Las Vegas"}]}
+[debug] [2025-06-27T17:49:25.400Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:25.400Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:25.400Z] >>> [apiv2][query] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc/databases [none]
+[debug] [2025-06-27T17:49:25.698Z] <<< [apiv2][status] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc/databases 404
+[debug] [2025-06-27T17:49:25.698Z] <<< [apiv2][body] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc/databases {"error":{"code":404,"message":"Not Found","errors":[{"message":"Not Found","domain":"global","reason":"notFound"}]}}
+[debug] [2025-06-27T17:49:25.699Z] [dataconnect] Cannot list databases during init: FirebaseError: Request to https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc/databases had HTTP Error: 404, Not Found
+[info] +  Wrote dataconnect\dataconnect.yaml 
+[info] +  Wrote dataconnect\schema\schema.gql 
+[info] +  Wrote dataconnect\connector\connector.yaml 
+[info] +  Wrote dataconnect\connector\queries.gql 
+[info] +  Wrote dataconnect\connector\mutations.gql 
+[debug] [2025-06-27T17:49:36.641Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:36.641Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:36.642Z] >>> [apiv2][query] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc [none]
+[debug] [2025-06-27T17:49:36.939Z] <<< [apiv2][status] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc 404
+[debug] [2025-06-27T17:49:36.939Z] <<< [apiv2][body] GET https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc {"error":{"code":404,"message":"The Cloud SQL instance does not exist.","errors":[{"message":"The Cloud SQL instance does not exist.","domain":"global","reason":"instanceDoesNotExist"}]}}
+[warn] !  dataconnect: Cloud SQL instances created via the Firebase CLI do not support customer managed encryption keys.
+If you'd like to use a CMEK to encrypt your data, first create a CMEK encrypted instance (https://cloud.google.com/sql/docs/postgres/configure-cmek#createcmekinstance).
+Then, edit your `dataconnect.yaml` file to use the encrypted instance and redeploy. 
+[info] i  dataconnect: Checking Cloud SQL no cost trial eligibility... 
+[debug] [2025-06-27T17:49:36.941Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:36.941Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:36.942Z] >>> [apiv2][query] GET https://monitoring.googleapis.com/v3/projects/skinvision-ai-cc1af/timeSeries/ filter=metric.type%3D%22serviceruntime.googleapis.com%2Fquota%2Fallocation%2Fusage%22+AND+metric.label.quota_metric+%3D+%22sqladmin.googleapis.com%2Ffdc_lifetime_free_trial_per_project%22&interval.endTime=2025-06-27T17%3A49%3A36.941Z&interval.startTime=2025-06-20T17%3A49%3A36.941Z
+[debug] [2025-06-27T17:49:37.840Z] <<< [apiv2][status] GET https://monitoring.googleapis.com/v3/projects/skinvision-ai-cc1af/timeSeries/ 200
+[debug] [2025-06-27T17:49:37.840Z] <<< [apiv2][body] GET https://monitoring.googleapis.com/v3/projects/skinvision-ai-cc1af/timeSeries/ {"unit":"1"}
+[info] +  dataconnect: CloudSQL no cost trial available! 
+[info] i  dataconnect:  
+[debug] [2025-06-27T17:49:37.846Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:37.846Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:37.846Z] >>> [apiv2][query] POST https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances [none]
+[debug] [2025-06-27T17:49:37.847Z] >>> [apiv2][body] POST https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances {"name":"skinvision-ai-fdc","region":"europe-southwest1","databaseVersion":"POSTGRES_15","settings":{"tier":"db-f1-micro","edition":"ENTERPRISE","ipConfiguration":{"authorizedNetworks":[]},"enableGoogleMlIntegration":false,"databaseFlags":[{"name":"cloudsql.iam_authentication","value":"on"}],"storageAutoResize":false,"userLabels":{"firebase-data-connect":"ft"},"insightsConfig":{"queryInsightsEnabled":true,"queryPlansPerMinute":5,"queryStringLength":1024}}}
+[debug] [2025-06-27T17:49:41.811Z] <<< [apiv2][status] POST https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances 200
+[debug] [2025-06-27T17:49:41.812Z] <<< [apiv2][body] POST https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances {"kind":"sql#operation","targetLink":"https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/instances/skinvision-ai-fdc","status":"PENDING","user":"mdaminefr@gmail.com","insertTime":"2025-06-27T17:49:40.959Z","operationType":"CREATE","name":"14e85f95-81eb-44a1-903a-4da80000004c","targetId":"skinvision-ai-fdc","selfLink":"https://sqladmin.googleapis.com/v1/projects/skinvision-ai-cc1af/operations/14e85f95-81eb-44a1-903a-4da80000004c","targetProject":"skinvision-ai-cc1af"}
+[info] i  dataconnect: Cloud SQL instance creation started - it should be ready shortly. Database and users will be created on your next deploy. 
+[info] i  If you'd like to add the generated SDK to your app later, run firebase init dataconnect:sdk 
+[info] 
+=== Firestore Setup
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2025-06-27T17:49:41.817Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:41.817Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:41.817Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firestore.googleapis.com [none]
+[debug] [2025-06-27T17:49:41.817Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firestore.googleapis.com x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:49:42.792Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firestore.googleapis.com 200
+[debug] [2025-06-27T17:49:42.793Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/firestore.googleapis.com [omitted]
+[info] +  firestore: required API firestore.googleapis.com is enabled 
+[debug] [2025-06-27T17:49:42.799Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:42.800Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:42.800Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases [none]
+[debug] [2025-06-27T17:49:43.401Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases 200
+[debug] [2025-06-27T17:49:43.401Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases {"databases":[{"name":"projects/skinvision-ai-cc1af/databases/(default)","uid":"152c2be5-f8d7-4929-a74d-80cdb9a7a6cd","createTime":"2025-06-27T13:37:27.316995Z","updateTime":"2025-06-27T13:37:27.316995Z","locationId":"eur3","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2025-06-27T16:49:42.594507Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"e","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"etag":"IL7oluyUko4DMPyP0rDokY4D"}]}
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2025-06-27T17:49:46.294Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:46.294Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:46.295Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/skinvision-ai-cc1af/releases pageSize=10&pageToken=
+[debug] [2025-06-27T17:49:47.123Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/skinvision-ai-cc1af/releases 200
+[debug] [2025-06-27T17:49:47.123Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/skinvision-ai-cc1af/releases {"releases":[{"name":"projects/skinvision-ai-cc1af/releases/cloud.firestore","rulesetName":"projects/skinvision-ai-cc1af/rulesets/d855f2ff-bfef-4ceb-9c6f-6d3743950b91","createTime":"2025-06-27T13:37:33.166688Z","updateTime":"2025-06-27T13:58:45.103589Z"},{"name":"projects/skinvision-ai-cc1af/releases/firebase.storage/skinvision-ai-cc1af.firebasestorage.app","rulesetName":"projects/skinvision-ai-cc1af/rulesets/0ea66a01-18ff-4fed-9cab-d67e8fa059d7","createTime":"2025-06-27T13:39:51.050813Z","updateTime":"2025-06-27T13:59:03.289696Z"}]}
+[debug] [2025-06-27T17:49:47.123Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:47.124Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:49:47.124Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/skinvision-ai-cc1af/rulesets/d855f2ff-bfef-4ceb-9c6f-6d3743950b91 [none]
+[debug] [2025-06-27T17:49:47.358Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/skinvision-ai-cc1af/rulesets/d855f2ff-bfef-4ceb-9c6f-6d3743950b91 200
+[debug] [2025-06-27T17:49:47.358Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/skinvision-ai-cc1af/rulesets/d855f2ff-bfef-4ceb-9c6f-6d3743950b91 [omitted]
+[info] i  Downloaded the existing Firestore Security Rules from the Firebase console 
+[info] 
+[info] Firestore indexes allow you to perform complex queries while
+[info] maintaining performance that scales with the size of the result
+[info] set. You can keep index definitions in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2025-06-27T17:50:00.952Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:00.952Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:00.952Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:00.952Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:00.953Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases/(default)/collectionGroups/-/indexes [none]
+[debug] [2025-06-27T17:50:00.955Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* [none]
+[debug] [2025-06-27T17:50:01.266Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* 200
+[debug] [2025-06-27T17:50:01.267Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* {"fields":[{"name":"projects/skinvision-ai-cc1af/databases/(default)/collectionGroups/__default__/fields/*","indexConfig":{"indexes":[{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"ASCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"DESCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","arrayConfig":"CONTAINS"}],"state":"READY"}]}}]}
+[debug] [2025-06-27T17:50:01.268Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases/(default)/collectionGroups/-/indexes 200
+[debug] [2025-06-27T17:50:01.268Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/skinvision-ai-cc1af/databases/(default)/collectionGroups/-/indexes {}
+[info] i  Downloaded the existing Firestore indexes from the Firebase console 
+[info] +  Wrote firestore.rules 
+[info] +  Wrote firestore.indexes.json 
+[info] 
+=== Genkit Setup
+[debug] [2025-06-27T17:50:01.392Z] Error: spawn(npm, view, genkit, version)
+  Stderr:
+{"type":"Buffer","data":[39,68,79,83,75,69,89,39,32,105,115,32,110,111,116,32,114,101,99,111,103,110,105,122,101,100,32,97,115,32,97,110,32,105,110,116,101,114,110,97,108,32,111,114,32,101,120,116,101,114,110,97,108,32,99,111,109,109,97,110,100,44,13,10,111,112,101,114,97,98,108,101,32,112,114,111,103,114,97,109,32,111,114,32,98,97,116,99,104,32,102,105,108,101,46,13,10]}
+
+[debug] [2025-06-27T17:50:03.667Z] Error: spawn(npm, view, genkit-cli, version)
+  Stderr:
+{"type":"Buffer","data":[39,68,79,83,75,69,89,39,32,105,115,32,110,111,116,32,114,101,99,111,103,110,105,122,101,100,32,97,115,32,97,110,32,105,110,116,101,114,110,97,108,32,111,114,32,101,120,116,101,114,110,97,108,32,99,111,109,109,97,110,100,44,13,10,111,112,101,114,97,98,108,101,32,112,114,111,103,114,97,109,32,111,114,32,98,97,116,99,104,32,102,105,108,101,46,13,10]}
+
+[debug] [2025-06-27T17:50:05.926Z] Error: spawn(npm, view, @genkit-ai/vertexai, version)
+  Stderr:
+{"type":"Buffer","data":[39,68,79,83,75,69,89,39,32,105,115,32,110,111,116,32,114,101,99,111,103,110,105,122,101,100,32,97,115,32,97,110,32,105,110,116,101,114,110,97,108,32,111,114,32,101,120,116,101,114,110,97,108,32,99,111,109,109,97,110,100,44,13,10,111,112,101,114,97,98,108,101,32,112,114,111,103,114,97,109,32,111,114,32,98,97,116,99,104,32,102,105,108,101,46,13,10]}
+
+[debug] [2025-06-27T17:50:08.993Z] Error: spawn(npm, view, @genkit-ai/googleai, version)
+  Stderr:
+{"type":"Buffer","data":[39,68,79,83,75,69,89,39,32,105,115,32,110,111,116,32,114,101,99,111,103,110,105,122,101,100,32,97,115,32,97,110,32,105,110,116,101,114,110,97,108,32,111,114,32,101,120,116,101,114,110,97,108,32,99,111,109,109,97,110,100,44,13,10,111,112,101,114,97,98,108,101,32,112,114,111,103,114,97,109,32,111,114,32,98,97,116,99,104,32,102,105,108,101,46,13,10]}
+
+[debug] [2025-06-27T17:50:13.885Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-06-27T17:50:13.885Z] > authorizing via signed-in user (mdaminefr@gmail.com)
+[debug] [2025-06-27T17:50:13.885Z] [iam] checking project skinvision-ai-cc1af for permissions ["firebase.projects.get"]
+[debug] [2025-06-27T17:50:13.886Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:13.886Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:13.886Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions [none]
+[debug] [2025-06-27T17:50:13.886Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:50:13.886Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-06-27T17:50:14.656Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions 200
+[debug] [2025-06-27T17:50:14.656Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-06-27T17:50:14.657Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:14.657Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:14.657Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:14.658Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:14.658Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-06-27T17:50:14.658Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:50:14.660Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-06-27T17:50:14.660Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:50:15.621Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/runtimeconfig.googleapis.com 200
+[debug] [2025-06-27T17:50:15.622Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-06-27T17:50:15.632Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com 200
+[debug] [2025-06-27T17:50:15.632Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-06-27T17:50:15.632Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:15.632Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:50:15.632Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com:enable [none]
+[debug] [2025-06-27T17:50:15.632Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com:enable x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:50:16.230Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com:enable 200
+[debug] [2025-06-27T17:50:16.230Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/skinvision-ai-cc1af/services/cloudfunctions.googleapis.com:enable [omitted]
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] +  Wrote functions/package.json 
+[info] +  Wrote functions/.eslintrc.js 
+[info] +  Wrote functions/tsconfig.dev.json 
+[info] +  Wrote functions/tsconfig.json 
+[info] +  Wrote functions/src/index.ts 
+[info] +  Wrote functions/.gitignore 
+[info] 
+[info] i  genkit: Installing Genkit CLI version 1.13.0
+ 
+[info] i  genkit: Installing NPM packages for genkit 
+[info] +  genkit: Successfully installed NPM packages 
+[info] i  genkit: Updating tsconfig.json 
+[warn] !  genkit: Skipped updating tsconfig.json 
+[info] i  genkit: Updating package.json 
+[warn] !  genkit: Skipped updating package.json 
+[info] Telemetry data can be used to monitor and gain insights into your AI features. There may be a cost associated with using this feature. See https://firebase.google.com/docs/genkit/observability/telemetry-collection.
+[info] i  genkit: Generating sample file 
+[info] +  genkit: Successfully generated sample file (src/genkit-sample.ts) 
+[info] 
+[info] 
+Login to Google Cloud using:
+[info]     gcloud auth application-default login --project skinvision-ai-cc1af
+
+[info] Then start the Genkit developer experience by running:
+[info]     cd functions && npm run genkit:start
+[info] 
+=== Functions Setup
+[debug] [2025-06-27T17:53:00.238Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-06-27T17:53:00.239Z] > authorizing via signed-in user (mdaminefr@gmail.com)
+[debug] [2025-06-27T17:53:00.239Z] [iam] checking project skinvision-ai-cc1af for permissions ["firebase.projects.get"]
+[debug] [2025-06-27T17:53:00.239Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:53:00.239Z] Checked if tokens are valid: true, expires at: 1751049942298
+[debug] [2025-06-27T17:53:00.239Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions [none]
+[debug] [2025-06-27T17:53:00.239Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions x-goog-quota-user=projects/skinvision-ai-cc1af
+[debug] [2025-06-27T17:53:00.240Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-06-27T17:53:00.953Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions 200
+[debug] [2025-06-27T17:53:00.953Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/skinvision-ai-cc1af:testIamPermissions {"permissions":["firebase.projects.get"]}
+[info] 
+Detected existing codebase(s): default
+
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] +  Wrote codebase/requirements.txt 
+[info] +  Wrote codebase/.gitignore 
+[info] +  Wrote codebase/main.py 
+[debug] [2025-06-27T17:53:22.322Z] Running command with virtualenv: command="C:\Users\JakeLee\Desktop\PFE\App\SkinVision-AI\codebase\venv\Scripts\activate.bat", args=["","&&","pip3","install","--upgrade","pip"]
+[debug] [2025-06-27T17:53:22.545Z] Error: spawn "C:\Users\JakeLee\Desktop\PFE\App\SkinVision-AI\codebase\venv\Scripts\activate.bat" ENOENT
+    at notFoundError (C:\Users\JakeLee\AppData\Roaming\nvm\v20.14.0\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:6:26)
+    at verifyENOENT (C:\Users\JakeLee\AppData\Roaming\nvm\v20.14.0\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:40:16)
+    at cp.emit (C:\Users\JakeLee\AppData\Roaming\nvm\v20.14.0\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:27:25)
+    at ChildProcess._handle.onexit (node:internal/child_process:294:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+[error] 
+[error] Error: An unexpected error has occurred.

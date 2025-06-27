@@ -1112,35 +1112,47 @@ What specific aspect would you like me to explain?`;
           
           {/* Results Column */}
           <div className={`${uploadedImage ? 'md:w-2/3' : 'w-full'}`}>
-            <h1 className="text-2xl font-bold mb-4 text-white" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>Analysis Results</h1>
+            <h1 className="text-2xl font-bold mb-4 text-white" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
+              Analysis Results
+            </h1>
             {topPrediction && (
               <div className="mb-4 text-white" style={{ fontSize: '1.1em' }}>
-                <b style={{ fontWeight: 700 }}>Top Prediction:</b> <span style={{ fontWeight: 500 }}>
-                  <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{topPrediction.code}</span>
-                  ({topPrediction.name}) - {(topPrediction.probability || 0).toFixed(2)}%
-                </span>
+                <b style={{ fontWeight: 700 }}>Top Prediction:</b>
+                <div className="mt-2 p-3 bg-white bg-opacity-10 rounded-lg">
+                  <span style={{ fontWeight: 700, textTransform: 'uppercase', color: '#000' }}>
+                    {topPrediction.code}
+                  </span>
+                  <br />
+                  <span style={{ fontWeight: 500, color: '#000' }}>
+                    {topPrediction.name}
+                  </span>
+                  <br />
+                  <span style={{ fontWeight: 600, color: '#4CAF50' }}>
+                    Confidence: {topPrediction.probability.toFixed(2)}%
+                  </span>
+                </div>
               </div>
             )}
+            
             {analysisResults && (
               <div className="mb-4 text-white" style={{ fontSize: '1.1em' }}>
-                <b style={{ fontWeight: 700 }}>Next Predictions:</b>
-                <ol style={{ paddingLeft: '20px' }}>
+                <b style={{ fontWeight: 700 }}>Other Predictions:</b>
+                <ol style={{ paddingLeft: '20px', marginTop: '8px' }}>
                   {Object.entries(analysisResults)
                     .sort(([, a]: [string, any], [, b]: [string, any]) => b.probability - a.probability)
                     .slice(1, 5)
-                    .map(([code, result]: [string, any], index) => {
-                      const nameParts = result.name.split('(');
-                      const name = nameParts[0].trim();
-                      const explanation = ` (${(nameParts.length > 1 ? nameParts[1] : nameParts[0]).toLowerCase()})`;
-
-                      return (
-                        <li key={code} style={{ fontWeight: 500 }}>
-                          {index + 2}. <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{code}</span>{explanation} - {(result.probability || 0).toFixed(2)}%
-                        </li>
-                      );
-                    })}
+                    .map(([code, result]: [string, any], index) => (
+                      <li key={code} style={{ fontWeight: 500, marginBottom: '4px' }}>
+                        {index + 2}. <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{code}</span>
+                        <br />
+                        <span style={{ marginLeft: '16px', fontSize: '0.9em' }}>
+                          {result.name} - {result.probability.toFixed(2)}%
+                        </span>
+                      </li>
+                    ))}
                 </ol>
-              </div>            )}
+              </div>
+            )}
             
           </div>
         </div>
