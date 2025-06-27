@@ -31,15 +31,21 @@ type TooltipMode = 'index' | 'dataset' | 'point' | 'nearest' | 'x' | 'y' | undef
 const Results = () => {
   const [analysisResults, setAnalysisResults] = useState<any>(null);
   const [topPrediction, setTopPrediction] = useState<any>(null);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);  const [showChat, setShowChat] = useState<boolean>(false);
-  const [chatMessages, setChatMessages] = useState<Array<{id: number, text: string, isUser: boolean, timestamp: Date, hasAnalysisButton?: boolean, hasReportButton?: boolean}>>([]);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [showChat, setShowChat] = useState<boolean>(false);
+  const [chatMessages, setChatMessages] = useState<Array<{id: number, text: string, isUser: boolean, timestamp: Date}>>([
+    {
+      id: 1,
+      text: "Hello! I'm your AI assistant. I can help you understand your skin analysis results. I have access to your uploaded image and the classification results. Feel free to ask me anything!",
+      isUser: false,
+      timestamp: new Date()
+    }
+  ]);
   const [chatInput, setChatInput] = useState<string>('');
   const [selectedModel, setSelectedModel] = useState<string>('');
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
   const [tempApiKey, setTempApiKey] = useState<string>('');
-  const [imageAnalyzed, setImageAnalyzed] = useState<boolean>(false);
-  const [reportGenerated, setReportGenerated] = useState<boolean>(false);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -96,62 +102,9 @@ const Results = () => {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [chatMessages]);
-  const performImageAnalysis = async () => {
-    if (!apiKey || !uploadedImage || imageAnalyzed) return;
-
-    try {
-      const analysisResult = await callChatGPTAPI(getAnalysisPrompt(), true);
-      
-      const analysisMessage = {
-        id: Date.now(),
-        text: analysisResult,
-        isUser: false,
-        timestamp: new Date(),
-        hasReportButton: true
-      };
-      setChatMessages(prev => [...prev, analysisMessage]);
-      setImageAnalyzed(true);
-      
-    } catch (error) {
-      console.error('Error performing image analysis:', error);
-      const errorMessage = {
-        id: Date.now(),
-        text: "❌ Erreur lors de l'analyse de l'image. Veuillez vérifier votre clé API et réessayer.",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, errorMessage]);
-    }
-  };
 
   const toggleChat = () => {
     setShowChat(!showChat);
-    
-    // Auto-analyze image when chat opens for the first time
-    if (!showChat && apiKey && uploadedImage && !imageAnalyzed) {
-      // Add initial welcome message
-      const welcomeMessage = {
-        id: Date.now(),
-        text: "Bonjour ! Je vais analyser votre image de lésion cutanée. Veuillez patienter...",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages([welcomeMessage]);
-      
-      // Perform analysis after a short delay
-      setTimeout(() => {
-        performImageAnalysis();
-      }, 1000);
-    } else if (!showChat && (!apiKey || !uploadedImage)) {
-      // Show message if prerequisites are missing
-      const missingMessage = {
-        id: Date.now(),
-        text: apiKey ? "Aucune image détectée. Veuillez télécharger une image d'abord." : "Veuillez configurer votre clé API dans les paramètres pour utiliser l'analyse automatique.",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages([missingMessage]);
-    }
   };
 
   const toggleSettings = () => {
@@ -171,53 +124,6 @@ const Results = () => {
     if (e.key === 'Enter') {
       saveApiKey();
     }
-  };
-
-  const getAnalysisPrompt = (): string => {
-    return `These are the classes for skin lesions:
-
-acb(melanocytic, benign, banal, compound, acral)
-acd(melanocytic, benign, dysplastic, compound, acral)
-ajb(melanocytic, benign, banal, junctional, acral)
-ajd(melanocytic, benign, dysplastic, junctional, acral)
-ak(nonmelanocytic, indeterminate, keratinocytic, keratinocytic, actinic_keratosis)
-alm(melanocytic, malignant, melanoma, melanoma, acral_lentiginious)
-angk(nonmelanocytic, benign, vascular, vascular, angiokeratoma)
-anm(melanocytic, malignant, melanoma, melanoma, acral_nodular)
-bcc(nonmelanocytic, malignant, keratinocytic, keratinocytic, basal_cell_carcinoma)
-bd(nonmelanocytic, malignant, keratinocytic, keratinocytic, bowen_disease)
-bdb(melanocytic, benign, banal, dermal, blue)
-cb(melanocytic, benign, banal, compound, compound)
-ccb(melanocytic, benign, banal, compound, congenital)
-ccd(melanocytic, benign, dysplastic, compound, congenital)
-cd(melanocytic, benign, dysplastic, compound, compound)
-ch(nonmelanocytic, malignant, keratinocytic, keratinocytic, cutaneous_horn)
-cjb(melanocytic, benign, banal, junctional, congenital)
-db(melanocytic, benign, banal, dermal, dermal)
-df(nonmelanocytic, benign, fibro_histiocytic, fibro_histiocytic, dermatofibroma)
-dfsp(nonmelanocytic, malignant, fibro_histiocytic, fibro_histiocytic, dermatofibrosarcoma_protuberans)
-ha(nonmelanocytic, benign, vascular, vascular, hemangioma)
-isl(melanocytic, neging, lentigo, lentigo, ink_spot_lentigo)
-jb(melanocytic, benign, banal, junctional, junctional)
-jd(melanocytic, benign, dysplastic, junctional, junctional)
-ks(nonmelanocytic, malignant, vascular, vascular, kaposi_sarcoma)
-la(nonmelanocytic, benign, vascular, vascular, lymphangioma)
-lk(nonmelanocytic, benign, keratinocytic, keratinocytic, lichenoid_keratosis)
-lm(melanocytic, malignant, melanoma, melanoma, lentigo_maligna)
-lmm(melanocytic, malignant, melanoma, melanoma, lentigo_maligna_melanoma)
-ls(melanocytic, benign, lentigo, lentigo, lentigo_simplex)
-mcb(melanocytic, benign, banal, compound, Miescher)
-mel(melanocytic, malignant, melanoma, melanoma, melanoma)
-mpd(nonmelanocytic, malignant, keratinocytic, keratinocytic, mammary_paget_disease)
-pg(nonmelanocytic, benign, vascular, vascular, pyogenic_granuloma)
-rd(melanocytic, benign, dysplastic, recurrent, recurrent)
-sa(nonmelanocytic, benign, vascular, vascular, spider_angioma)
-scc(nonmelanocytic, malignant, keratinocytic, keratinocytic, squamous_cell_carcinoma)
-sk(nonmelanocytic, benign, keratinocytic, keratinocytic, seborrheic_keratosis)
-sl(melanocytic, benign, lentigo, lentigo, solar_lentigo)
-srjd(melanocytic, benign, dysplastic, junctional, spitz_reed)
-
-From now on, give me which skin lesion it is for each picture, and reason why you chose it. Please provide a detailed medical analysis of this skin lesion image, including your assessment of what type of lesion it appears to be and the reasoning behind your diagnosis.`;
   };
 
   const getMedicalAnalysisPrompt = (): string => {
@@ -332,112 +238,60 @@ IMPORTANT: Rappelez toujours que ceci est un outil d'aide au diagnostic et qu'un
     const data = await response.json();
     return data.choices[0].message.content;
   };
+
   const generateMedicalReport = async (): Promise<string> => {
-    if (!apiKey || !uploadedImage) {
-      throw new Error('API key and image are required for report generation');
+    if (!apiKey || !uploadedImage || !topPrediction) {
+      throw new Error('Données insuffisantes pour générer le rapport médical');
     }
 
-    const reportPrompt = `You are a medical assistant specializing in dermatopathology. I will give you a **clinical image of a skin lesion** and a list of classification codes. Based on the **visual characteristics of the lesion**, you must analyze it and produce a structured **medical report in French**, using the exact format and structure described below.
+    const reportPrompt = `Générez un rapport médical détaillé en français pour cette analyse de lésion cutanée.
 
----
+STRUCTURE REQUISE:
+=================
 
-### 📌 GENERAL RULES:
+**RAPPORT D'ANALYSE DERMOSCOPIQUE**
 
-* **Language of output**: French only.
-* **Tone**: Professional, clinical, and concise (as used in medical practice).
-* **Avoid**: Overly verbose explanations, patient-oriented language, or unnecessary background.
-* **Focus on**: The diagnostic reasoning and its clinical implications.
-* Use **structured formatting** (titles, bullets, indentation where needed).
-* The diagnosis must **match one of the classification codes I will provide** below. You should select the **single most likely code** and justify it briefly but clearly.
+**Informations Patient:**
+- Date d'analyse: ${new Date().toLocaleDateString('fr-FR')}
+- Méthode: Intelligence Artificielle (${selectedModel})
 
----
+**Observations Cliniques:**
+[Décrivez l'apparence visuelle de la lésion basée sur l'image]
 
-### 📂 CLASSIFICATION CODES :
+**Résultats de l'Analyse IA:**
+- Classification principale: ${topPrediction.code} - ${topPrediction.name}
+- Niveau de confiance: ${topPrediction.probability.toFixed(2)}%
 
-\`\`\`
-acb(melanocytic, benign, banal, compound, acral)
-acd(melanocytic, benign, dysplastic, compound, acral)
-ajb(melanocytic, benign, banal, junctional, acral)ajd(melanocytic, benign, dysplastic, junctional, acral)
-ak(nonmelanocytic, indeterminate, keratinocytic, keratinocytic, actinic_keratosis)
-alm(melanocytic, malignant, melanoma, melanoma, acral_lentiginious)
-angk(nonmelanocytic, benign, vascular, vascular, angiokeratoma)
-anm(melanocytic, malignant, melanoma, melanoma, acral_nodular)
-bcc(nonmelanocytic, malignant, keratinocytic, keratinocytic, basal_cell_carcinoma)
-bd(nonmelanocytic, malignant, keratinocytic, keratinocytic, bowen_disease)
-bdb(melanocytic, benign, banal, dermal, blue)
-cb(melanocytic, benign, banal, compound, compound)
-ccb(melanocytic, benign, banal, compound, congenital)
-ccd(melanocytic, benign, dysplastic, compound, congenital)
-cd(melanocytic, benign, dysplastic, compound, compound)
-ch(nonmelanocytic, malignant, keratinocytic, keratinocytic, cutaneous_horn)
-cjb(melanocytic, benign, banal, junctional, congenital)
-db(melanocytic, benign, banal, dermal, dermal)
-df(nonmelanocytic, benign, fibro_histiocytic, fibro_histiocytic, dermatofibroma)
-dfsp(nonmelanocytic, malignant, fibro_histiocytic, fibro_histiocytic, dermatofibrosarcoma_protuberans)
-ha(nonmelanocytic, benign, vascular, vascular, hemangioma)
-isl(melanocytic, neging, lentigo, lentigo, ink_spot_lentigo)
-jb(melanocytic, benign, banal, junctional, junctional)
-jd(melanocytic, benign, dysplastic, junctional, junctional)
-ks(nonmelanocytic, malignant, vascular, vascular, kaposi_sarcoma)
-la(nonmelanocytic, benign, vascular, vascular, lymphangioma)
-lk(nonmelanocytic, benign, keratinocytic, keratinocytic, lichenoid_keratosis)
-lm(melanocytic, malignant, melanoma, melanoma, lentigo_maligna)
-lmm(melanocytic, malignant, melanoma, melanoma, lentigo_maligna_melanoma)
-ls(melanocytic, benign, lentigo, lentigo, lentigo_simplex)
-mcb(melanocytic, benign, banal, compound, Miescher)
-mel(melanocytic, malignant, melanoma, melanoma, melanoma)
-mpd(nonmelanocytic, malignant, keratinocytic, keratinocytic, mammary_paget_disease)
-pg(nonmelanocytic, benign, vascular, vascular, pyogenic_granuloma)
-rd(melanocytic, benign, dysplastic, recurrent, recurrent)
-sa(nonmelanocytic, benign, vascular, vascular, spider_angioma)
-scc(nonmelanocytic, malignant, keratinocytic, keratinocytic, squamous_cell_carcinoma)
-sk(nonmelanocytic, benign, keratinocytic, keratinocytic, seborrheic_keratosis)
-sl(melanocytic, benign, lentigo, lentigo, solar_lentigo)
-srjd(melanocytic, benign, dysplastic, junctional, spitz_reed)
-\`\`\`
+**Classifications Alternatives:**
+${Object.entries(analysisResults || {})
+  .sort(([,a]: [string, any], [,b]: [string, any]) => b.probability - a.probability)
+  .slice(1, 4)
+  .map(([code, result]: [string, any], index) => 
+    `${index + 2}. ${code} - ${result.name} (${result.probability.toFixed(2)}%)`
+  ).join('\n')}
 
-Please analyze this skin lesion image and generate a complete medical report following the exact structure provided in the prompt. The report should include all three sections: diagnostic summary, referral letter, and clinical note as specified in the template.`;
+**Analyse Dermoscopique:**
+[Commentaires sur les caractéristiques observées]
+
+**Interprétation:**
+[Évaluation clinique basée sur les résultats]
+
+**Recommandations:**
+[Actions cliniques recommandées]
+
+**Limitations:**
+Cette analyse par IA constitue un outil d'aide au diagnostic. Un examen clinique par un dermatologue reste indispensable pour établir un diagnostic définitif et déterminer la conduite thérapeutique appropriée.
+
+**Signature Numérique:**
+Analyse automatisée - SkinVision AI v1.0
+
+IMPORTANT: Générez un rapport médical complet, professionnel et détaillé en français, en analysant attentivement l'image fournie.`;
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'user',
-              content: [
-                {
-                  type: 'text',
-                  text: reportPrompt
-                },
-                {
-                  type: 'image_url',
-                  image_url: {
-                    url: uploadedImage,
-                    detail: 'high'
-                  }
-                }
-              ]
-            }
-          ],
-          max_tokens: 2000,
-          temperature: 0.3,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.choices[0].message.content;
+      const reportContent = await callChatGPTAPI(reportPrompt, true);
+      return reportContent;
     } catch (error) {
-      console.error('Error generating medical report:', error);
+      console.error('Erreur lors de la génération du rapport:', error);
       throw error;
     }
   };
@@ -446,52 +300,29 @@ Please analyze this skin lesion image and generate a complete medical report fol
     try {
       const reportContent = await generateMedicalReport();
       
-      // Import jsPDF dynamically
-      const { jsPDF } = await import('jspdf');
-      const pdf = new jsPDF();
-      
-      // Set font and styling
-      pdf.setFont('helvetica');
-      pdf.setFontSize(12);
-      
-      // Split text into lines that fit the page width
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const margins = 20;
-      const textWidth = pageWidth - (margins * 2);
-      
-      const lines = pdf.splitTextToSize(reportContent, textWidth);
-      
-      // Add content to PDF
-      let y = margins;
-      const lineHeight = 6;
-      
-      lines.forEach((line: string) => {
-        if (y > pdf.internal.pageSize.getHeight() - margins) {
-          pdf.addPage();
-          y = margins;
-        }
-        pdf.text(line, margins, y);
-        y += lineHeight;
-      });
-      
-      // Download the PDF
-      const fileName = `rapport_medical_${new Date().toISOString().split('T')[0]}.pdf`;
-      pdf.save(fileName);
+      // Create a simple text-based PDF content (you could enhance this with a proper PDF library)
+      const element = document.createElement('a');
+      const file = new Blob([reportContent], { type: 'text/plain' });
+      element.href = URL.createObjectURL(file);
+      element.download = `rapport_medical_${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
       
       // Add success message to chat
       const successMessage = {
         id: Date.now(),
-        text: "✅ Rapport médical généré et téléchargé avec succès en format PDF!",
+        text: "✅ Rapport médical généré et téléchargé avec succès!",
         isUser: false,
         timestamp: new Date()
       };
       setChatMessages(prev => [...prev, successMessage]);
       
     } catch (error) {
-      console.error('Error downloading PDF report:', error);
+      console.error('Erreur lors du téléchargement du rapport:', error);
       const errorMessage = {
         id: Date.now(),
-        text: "❌ Erreur lors de la génération du rapport médical PDF. Veuillez vérifier votre clé API et réessayer.",
+        text: "❌ Erreur lors de la génération du rapport médical. Veuillez vérifier votre clé API et réessayer.",
         isUser: false,
         timestamp: new Date()
       };
@@ -738,8 +569,22 @@ What specific aspect would you like me to explain?`;
                       );
                     })}
                 </ol>
-              </div>            )}
+              </div>
+            )}
             
+            {/* Medical Report Download Button */}
+            {apiKey && uploadedImage && topPrediction && (
+              <div className="mt-4">
+                <button
+                  onClick={downloadPDFReport}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  style={{ fontWeight: 600 }}
+                >
+                  <FaDownload />
+                  Télécharger Rapport Médical
+                </button>
+              </div>
+            )}
           </div>
         </div>
         
@@ -806,46 +651,60 @@ What specific aspect would you like me to explain?`;
                     >
                       Save API Key
                     </button>
-                      <div className={`${styles.apiStatus} ${apiKey ? styles.apiStatusConnected : styles.apiStatusDisconnected}`}>
+                    
+                    <div className={`${styles.apiStatus} ${apiKey ? styles.apiStatusConnected : styles.apiStatusDisconnected}`}>
                       {apiKey ? '✓ API Key Configured' : '⚠ No API Key Set'}
+                    </div>
+                    
+                    {/* Quick Action Buttons */}
+                    <div style={{ marginTop: '15px', padding: '10px 0', borderTop: '1px solid #444' }}>
+                      <h5 style={{ marginBottom: '10px', fontSize: '14px', color: '#ccc' }}>Quick Actions:</h5>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <button
+                          onClick={() => {
+                            setChatInput('Analyze this skin lesion image medically');
+                            setShowSettings(false);
+                          }}
+                          className={styles.quickActionButton}
+                        >
+                          🔍 Analyse médicale de l'image
+                        </button>
+                        <button
+                          onClick={() => {
+                            downloadPDFReport();
+                            setShowSettings(false);
+                          }}
+                          className={styles.quickActionButton}
+                          disabled={!apiKey || !uploadedImage || !topPrediction}
+                        >
+                          📄 Générer rapport médical
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
-            </div>            <div className={styles.chatMessages} ref={chatMessagesRef}>
+            </div>
+            <div className={styles.chatMessages} ref={chatMessagesRef}>
               {chatMessages.map((message) => (
-                <div key={message.id}>
-                  <div 
-                    className={`${styles.chatMessage} ${message.isUser ? styles.userMessage : ''}`}
-                  >
-                    <p>{message.text}</p>
-                    <span className={styles.timestamp}>
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-                  {message.hasReportButton && !reportGenerated && (
-                    <div style={{ margin: '10px 0', textAlign: 'center' }}>
-                      <button
-                        onClick={() => {
-                          downloadPDFReport();
-                          setReportGenerated(true);
-                        }}
-                        className={styles.actionButton}
-                        disabled={!apiKey}
-                      >
-                        📄 Générer Rapport Médical
-                      </button>
-                    </div>
-                  )}
+                <div 
+                  key={message.id} 
+                  className={`${styles.chatMessage} ${message.isUser ? styles.userMessage : ''}`}
+                >
+                  <p>{message.text}</p>
+                  <span className={styles.timestamp}>
+                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                 </div>
               ))}
-            </div>            <div className={styles.chatInputContainer}>
+            </div>
+            <div className={styles.chatInputContainer}>
               <input 
                 type="text" 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Posez vos questions sur l'analyse..." 
+                placeholder="Demandez l'analyse médicale, les explications des résultats, ou générez un rapport..." 
                 className={styles.chatInput}
               />
               <button 

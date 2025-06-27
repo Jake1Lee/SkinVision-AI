@@ -9,6 +9,9 @@ const Navbar = () => {
         <Link href="/" className={styles.homeButton}>
           Home
         </Link>
+        <Link href="/benchmarking" className={styles.navButton}>
+          Benchmarking
+        </Link>
         <Link href="/about" className={styles.aboutButton}>
           About
         </Link>

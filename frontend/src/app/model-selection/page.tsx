@@ -50,25 +50,23 @@ const ModelSelection = () => {
       // Store the selected model in local storage
       localStorage.setItem('selectedModel', selectedModel);
 
-      if (selectedModel === 'resnet50') {
-        try {
-          // Retrieve the filename from local storage
-          const filename = localStorage.getItem('uploadedImageName') || 'skin_lesion.jpg'; // Default filename
+      try {
+        // Retrieve the filename from local storage
+        const filename = localStorage.getItem('uploadedImageName') || 'skin_lesion.jpg'; // Default filename
 
-          // Send the selected model and image to the backend for analysis
-          const response = await axios.post('http://localhost:5000/api/analyze', {
-            filename: filename,
-            model: selectedModel,
-          });
+        // Send the selected model and image to the backend for analysis
+        const response = await axios.post('http://localhost:5000/api/analyze', {
+          filename: filename,
+          model: selectedModel,
+        });
 
-          // Store the results in local storage
-          localStorage.setItem('analysisResults', JSON.stringify(response.data.results));
+        // Store the results in local storage
+        localStorage.setItem('analysisResults', JSON.stringify(response.data.results));
 
-          router.push('/results'); // Navigate to the results page
-        } catch (error: any) {
-          console.error('Error analyzing image:', error.message);
-          alert('Error analyzing image: ' + error.message);
-        }
+        router.push('/results'); // Navigate to the results page
+      } catch (error: any) {
+        console.error('Error analyzing image:', error.message);
+        alert('Error analyzing image: ' + error.message);
       }
     } else {
       alert('Please select a model and upload an image.');

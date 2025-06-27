@@ -58,9 +58,12 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
-      <h1 className="text-4xl font-bold mb-8 text-white" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
-        SkinVision AI: Upload image of skin to classify it
+      <h1 className="text-7xl font-bold mb-8 text-purple-800" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
+        SkinVision AI
       </h1>
+      <h2 className="text-4xl font-bold mb-8 text-purple-800" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
+         Upload image of skin to classify it
+      </h2>
       <GlassCard>
         <input
           type="file"

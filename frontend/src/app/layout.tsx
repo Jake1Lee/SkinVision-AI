@@ -32,7 +32,11 @@ export default function RootLayout({
       </head>
       <body
         className={`antialiased`}
-        style={{ backgroundColor: '#966fd6', fontFamily: 'Dosis', fontWeight: 400 }}
+        style={{ 
+          // backgroundColor: '#966fd6'
+          backgroundColor: '#d7d7e7', 
+          fontFamily: 'Dosis', 
+          fontWeight: 400 }}
       >
         <Navbar />
         {children}

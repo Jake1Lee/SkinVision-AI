@@ -1,18 +1,19 @@
 .backButton {
-  background: rgba(200, 200, 200, 0.2);
+  background: #966fd670;
   backdrop-filter: blur(30px);
   border: none;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #fff;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 8px 16px;
   transition: background-color 0.3s ease;
+  width: auto;
 }
 
 .backButton:hover {
-  background-color: rgba(200, 200, 200, 0.3);
+  background-color: #966fd699;
 }

@@ -1,6 +1,7 @@
 acb(melanocytic, benign, banal, compound, acral)
 acd(melanocytic, benign, dysplastic, compound, acral)
-ajb(melanocytic, benign, banal, junctional, acral)ajd(melanocytic, benign, dysplastic, junctional, acral)
+ajb(melanocytic, benign, banal, junctional, acral)
+ajd(melanocytic, benign, dysplastic, junctional, acral)
 ak(nonmelanocytic, indeterminate, keratinocytic, keratinocytic, actinic_keratosis)
 alm(melanocytic, malignant, melanoma, melanoma, acral_lentiginious)
 angk(nonmelanocytic, benign, vascular, vascular, angiokeratoma)
