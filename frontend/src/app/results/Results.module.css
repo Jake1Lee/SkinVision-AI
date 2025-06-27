@@ -38,6 +38,10 @@
   right: 30px;
   width: 450px;
   height: 600px;
+  min-width: 350px;
+  min-height: 400px;
+  max-width: 80vw;
+  max-height: 80vh;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(15px);
   border-radius: 15px;
@@ -47,6 +51,20 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.3);
   z-index: 999;
+  resize: both;
+}
+
+/* Resize handle styling */
+.chatInterface::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(-45deg, transparent 50%, rgba(255, 255, 255, 0.3) 50%);
+  cursor: nw-resize;
+  z-index: 1002;
 }
 
 .chatHeader {
@@ -94,6 +112,72 @@
   margin: 0;
   white-space: pre-line;
   line-height: 1.4;
+}
+
+/* Markdown styling in chat messages */
+.chatMessage h1,
+.chatMessage h2,
+.chatMessage h3,
+.chatMessage h4,
+.chatMessage h5,
+.chatMessage h6 {
+  color: white;
+  margin-top: 0.8em;
+  margin-bottom: 0.4em;
+  font-weight: bold;
+}
+
+.chatMessage h1 { font-size: 1.3em; }
+.chatMessage h2 { font-size: 1.2em; }
+.chatMessage h3 { font-size: 1.1em; }
+.chatMessage h4 { font-size: 1em; }
+
+.chatMessage ul,
+.chatMessage ol {
+  color: white;
+  margin-left: 1.2em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.chatMessage li {
+  color: white;
+  margin-bottom: 0.3em;
+  line-height: 1.4;
+}
+
+.chatMessage strong {
+  color: white;
+  font-weight: bold;
+}
+
+.chatMessage em {
+  color: white;
+  font-style: italic;
+}
+
+.chatMessage code {
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffeb3b;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+}
+
+.chatMessage pre {
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 0.5em 0;
+  overflow-x: auto;
+}
+
+.chatMessage blockquote {
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
+  margin: 0.5em 0;
+  padding-left: 1em;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .userMessage {
