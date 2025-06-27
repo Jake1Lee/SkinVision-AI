@@ -408,3 +408,50 @@
   transform: none;
   box-shadow: none;
 }
+
+/* Save to History Styles */
+.saveToHistoryContainer {
+  text-align: center;
+  margin: 24px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.saveToHistoryButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+  min-width: 180px;
+}
+
+.saveToHistoryButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+}
+
+.saveToHistoryButton.saved {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  cursor: default;
+}
+
+.saveToHistoryButton:disabled {
+  cursor: not-allowed;
+  transform: none;
+}
+
+.saveConfirmation {
+  margin-top: 12px;
+  color: #4caf50;
+  font-size: 0.9rem;
+  font-weight: 500;
+}

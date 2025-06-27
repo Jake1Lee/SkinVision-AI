@@ -8,7 +8,7 @@ import numpy as np
 from models import predict_with_model
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'])
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -77,7 +77,18 @@ def analyze_image():
 
 @app.route('/api/models', methods=['GET'])
 def get_models():
-    
+    models = [
+        {
+            'id': 'inceptionv3',
+            'name': 'InceptionV3',
+            'description': 'Google InceptionV3 model trained for skin lesion classification'
+        },
+        {
+            'id': 'resnet50',
+            'name': 'ResNet50',
+            'description': 'ResNet50 model trained for skin lesion classification'
+        }
+    ]
     
     return jsonify(models)
 

@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Component, ErrorInfo, ReactNode } from 'react';
 import GlassCard from '@/components/GlassCard';
 import BackButton from '@/components/BackButton';
 import { Bar } from 'react-chartjs-2';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useAuth } from '@/contexts/AuthContext';
+import { scanHistoryService } from '@/services/scanHistoryService';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -31,6 +33,7 @@ ChartJS.register(
 type TooltipMode = 'index' | 'dataset' | 'point' | 'nearest' | 'x' | 'y' | undefined;
 
 const Results = () => {
+  const { currentUser } = useAuth();
   const [analysisResults, setAnalysisResults] = useState<any>(null);
   const [topPrediction, setTopPrediction] = useState<any>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);  const [showChat, setShowChat] = useState<boolean>(false);
@@ -42,6 +45,9 @@ const Results = () => {
   const [tempApiKey, setTempApiKey] = useState<string>('');
   const [imageAnalyzed, setImageAnalyzed] = useState<boolean>(false);
   const [reportGenerated, setReportGenerated] = useState<boolean>(false);
+  const [isSavedToHistory, setIsSavedToHistory] = useState<boolean>(false);
+  const [currentScanId, setCurrentScanId] = useState<string | null>(null);
+  const [chartLoaded, setChartLoaded] = useState<boolean>(false);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -167,6 +173,92 @@ const Results = () => {
     setApiKey(tempApiKey);
     localStorage.setItem('chatGptApiKey', tempApiKey);
     setShowSettings(false);
+  };
+
+  const saveToHistory = async (): Promise<string | null> => {
+    if (!currentUser || !uploadedImage || !analysisResults || !topPrediction) {
+      alert('Cannot save: Missing user, image, or analysis results');
+      return null;
+    }
+
+    try {
+      // Test Firebase connection first
+      const connectionTest = await scanHistoryService.testConnection(currentUser.uid);
+      if (!connectionTest) {
+        // Debug authentication if connection fails
+        await scanHistoryService.debugAuth();
+        alert('Firebase connection failed. Please check your internet connection and try again.');
+        return null;
+      }
+
+      // Get patient data from localStorage
+      const patientData = JSON.parse(localStorage.getItem('patientData') || '{}');
+      const imageName = localStorage.getItem('uploadedImageName') || 'skin_lesion.jpg';
+      
+      console.log('🔍 Preparing image data for upload...');
+      console.log('Image data type:', typeof uploadedImage);
+      console.log('Image data length:', uploadedImage.length);
+      console.log('Image data preview:', uploadedImage.substring(0, 50) + '...');
+      
+      // Validate image data first
+      const validation = scanHistoryService.validateImageData(uploadedImage);
+      console.log('📋 Image data validation result:', validation);
+      
+      if (!validation.isValid) {
+        console.error('❌ Image data validation failed:', validation.error);
+        alert(`Image data validation failed: ${validation.error}. Please try uploading the image again.`);
+        return null;
+      }
+      
+      // Convert image data to blob with comprehensive error handling
+      let imageBlob: Blob;
+      try {
+        // Use the robust image conversion method
+        imageBlob = await scanHistoryService.imageToBlob(uploadedImage);
+        console.log('✅ Image converted to blob successfully, size:', imageBlob.size, 'type:', imageBlob.type);
+      } catch (blobError) {
+        console.error('❌ Failed to convert image to blob:', blobError);
+        
+        // Provide specific error message based on the error type
+        const errorMsg = blobError instanceof Error ? blobError.message : 'Unknown conversion error';
+        
+        if (errorMsg.includes('base64')) {
+          alert('Error: The image data appears to be corrupted or in an unsupported format. Please try uploading the image again.');
+        } else if (errorMsg.includes('fetch')) {
+          alert('Error: Unable to load the image from its source. Please try uploading the image again.');
+        } else {
+          alert('Error processing image data. Please try uploading the image again or use a different image format.');
+        }
+        
+        console.log('🛑 Aborting scan save due to image conversion failure');
+        return null;
+      }
+      
+      // Save to Firebase
+      const scanId = await scanHistoryService.saveScan(
+        currentUser.uid,
+        imageBlob,
+        imageName,
+        patientData,
+        selectedModel,
+        {
+          predictions: analysisResults,
+          topPrediction: topPrediction
+        }
+      );
+      
+      setCurrentScanId(scanId); // Store scan ID for PDF uploads
+      setIsSavedToHistory(true);
+      console.log('✅ Scan saved to Firebase successfully with ID:', scanId);
+      
+      return scanId; // Return the scan ID for immediate use
+      
+    } catch (error) {
+      console.error('Error saving scan to Firebase:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error saving scan to cloud storage: ${errorMessage}`);
+      return null;
+    }
   };
 
   const handleSettingsKeyPress = (e: React.KeyboardEvent) => {
@@ -747,7 +839,7 @@ Systeme: SkinVision-AI
 Modele: ${selectedModel}
 
 MOTIF DE CONSULTATION:
-Analyse dermatologique automatisee d'une lesion cutanee
+Analyse dermatologique automatisee d'une lesion cutanée
 
 RESULTATS DE L'ANALYSE:
 - Classification IA: ${topPrediction?.code || 'N/A'}
@@ -784,7 +876,7 @@ LIMITATIONS:
 ============================================================
 
 CONCLUSION:
-Analyse dermatologique par IA suggerant ${topPrediction?.name || 'une lesion cutanee'} avec ${topPrediction ? (topPrediction.probability || 0).toFixed(1) : 'N/A'}% de confiance. Evaluation dermatologique clinique recommandee pour confirmation diagnostique et prise en charge therapeutique appropriee.
+Analyse dermatologique par IA suggérant ${topPrediction?.name || 'une lesion cutanee'} avec ${topPrediction ? (topPrediction.probability || 0).toFixed(1) : 'N/A'}% de confiance. Evaluation dermatologique clinique recommandee pour confirmation diagnostique et prise en charge therapeutique appropriee.
 
 Rapport genere le ${currentDate} par SkinVision-AI`;
       }
@@ -878,16 +970,90 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
       const fileName = `rapport_medical_${new Date().toISOString().split('T')[0]}.pdf`;
       pdf.save(fileName);
       
-      console.log('✅ PDF generated and downloaded successfully');
-      
-      // Add success message to chat
-      const successMessage = {
-        id: Date.now() + 5,
-        text: "✅ Rapport médical structuré généré et téléchargé avec succès en format PDF!",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, successMessage]);
+      // Save PDF reference to Firebase scan history
+      if (currentUser) {
+        try {
+          const pdfBlob = pdf.output('blob');
+          
+          if (currentScanId) {
+            // Update existing scan in Firebase
+            console.log('📤 Uploading PDF to Firebase for scan:', currentScanId);
+            await scanHistoryService.updateScanWithPDF(currentScanId, pdfBlob, fileName);
+            console.log('✅ PDF uploaded to Firebase and linked to scan');
+            
+            // Update success message to include Firebase upload
+            const successMessage = {
+              id: Date.now() + 5,
+              text: "✅ Rapport médical généré, téléchargé et sauvegardé dans le cloud!",
+              isUser: false,
+              timestamp: new Date()
+            };
+            setChatMessages(prev => [...prev, successMessage]);
+            
+          } else {
+            // Scan not saved to history yet - auto-save it first, then attach PDF
+            console.log('💾 Auto-saving scan to history before attaching PDF...');
+            
+            try {
+              // Save scan to history first and get the scan ID
+              const newScanId = await saveToHistory();
+              
+              if (newScanId) {
+                console.log('📤 Now uploading PDF to the saved scan with ID:', newScanId);
+                await scanHistoryService.updateScanWithPDF(newScanId, pdfBlob, fileName);
+                console.log('✅ PDF uploaded to Firebase after auto-save');
+                
+                const autoSaveSuccessMessage = {
+                  id: Date.now() + 6,
+                  text: "✅ Scan automatiquement sauvegardé et PDF ajouté au cloud!",
+                  isUser: false,
+                  timestamp: new Date()
+                };
+                setChatMessages(prev => [...prev, autoSaveSuccessMessage]);
+              } else {
+                const warningMessage = {
+                  id: Date.now() + 5,
+                  text: "✅ Rapport PDF généré et téléchargé. ⚠️ Impossible de sauvegarder automatiquement - utilisez 'Save to History'.",
+                  isUser: false,
+                  timestamp: new Date()
+                };
+                setChatMessages(prev => [...prev, warningMessage]);
+              }
+              
+            } catch (saveError) {
+              console.error('Error auto-saving scan:', saveError);
+              
+              const warningMessage = {
+                id: Date.now() + 5,
+                text: "✅ Rapport PDF généré et téléchargé. ⚠️ Impossible de sauvegarder automatiquement - utilisez 'Save to History'.",
+                isUser: false,
+                timestamp: new Date()
+              };
+              setChatMessages(prev => [...prev, warningMessage]);
+            }
+          }
+        } catch (error) {
+          console.error('❌ Error saving PDF to Firebase:', error);
+          
+          // Still show success for local download, but mention cloud save failed
+          const partialSuccessMessage = {
+            id: Date.now() + 5,
+            text: "✅ Rapport PDF généré et téléchargé localement. ⚠️ Erreur lors de la sauvegarde cloud - veuillez réessayer.",
+            isUser: false,
+            timestamp: new Date()
+          };
+          setChatMessages(prev => [...prev, partialSuccessMessage]);
+        }
+      } else {
+        // User not logged in
+        const localOnlyMessage = {
+          id: Date.now() + 5,
+          text: "✅ Rapport PDF généré et téléchargé. Connectez-vous pour sauvegarder dans le cloud.",
+          isUser: false,
+          timestamp: new Date()
+        };
+        setChatMessages(prev => [...prev, localOnlyMessage]);
+      }
       
     } catch (error) {
       console.error('❌ Error in PDF generation:', error);
@@ -1034,12 +1200,39 @@ What specific aspect would you like me to explain?`;
     }
   };
 
+  // Safely process analysis results for the chart
+  const getChartData = () => {
+    if (!analysisResults || typeof analysisResults !== 'object') {
+      return { labels: [], data: [] };
+    }
+
+    try {
+      const entries = Object.entries(analysisResults);
+      const labels: string[] = [];
+      const data: number[] = [];
+
+      entries.forEach(([key, value]) => {
+        if (value && typeof value === 'object' && 'probability' in value) {
+          labels.push(key);
+          data.push(typeof value.probability === 'number' ? value.probability : 0);
+        }
+      });
+
+      return { labels: labels.sort(), data };
+    } catch (error) {
+      console.error('Error processing chart data:', error);
+      return { labels: [], data: [] };
+    }
+  };
+
+  const chartData = getChartData();
+
   const data = {
-    labels: analysisResults ? Object.keys(analysisResults).sort() : [],
+    labels: chartData.labels,
     datasets: [
       {
         label: 'Probability',
-        data: analysisResults ? Object.values(analysisResults).map((item: any) => item.probability) : [],
+        data: chartData.data,
         backgroundColor: 'rgba(23, 1, 105, 0.8)', // Deep blue to purple gradient
         borderColor: 'rgba(75, 0, 130, 1)',
         borderWidth: 1,
@@ -1049,9 +1242,13 @@ What specific aspect would you like me to explain?`;
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          color: '#fff',
+        },
       },
       title: {
         display: true,
@@ -1059,10 +1256,19 @@ What specific aspect would you like me to explain?`;
         color: '#fff',
       },
       tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+        borderWidth: 1,
         callbacks: {
           label: (context: any) => {
+            if (!context || typeof context.parsed === 'undefined') {
+              return '';
+            }
             const label = context.label || '';
-            const value = context.parsed.y || 0;
+            const value = context.parsed?.y !== undefined ? context.parsed.y : 0;
             return `${label}: ${value.toFixed(2)}%`;
           }
         },
@@ -1074,33 +1280,62 @@ What specific aspect would you like me to explain?`;
       x: {
         ticks: {
           color: '#fff',
+          maxRotation: 45,
+          minRotation: 0,
         },
         grid: {
           color: 'rgba(255, 255, 255, 0.1)',
         },
       },
       y: {
+        beginAtZero: true,
         ticks: {
           color: '#fff',
-          callback: (value: number | string) => {
-            return value;
+          callback: (value: any) => {
+            return typeof value === 'number' ? `${value}%` : value;
           }
         },
         grid: {
           color: 'rgba(255, 255, 255, 0.1)',
         },
       }
-    }
+    },
+    interaction: {
+      mode: 'index' as const,
+      intersect: false,
+    },
+    onHover: (event: any, elements: any[]) => {
+      if (event?.native?.target) {
+        event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+      }
+    },
   }
+
+  // Handle chart loading
+  useEffect(() => {
+    const loadChart = async () => {
+      try {
+        // Ensure Chart.js is loaded
+        const { Chart } = await import('chart.js/auto');
+        Chart.register();
+        setChartLoaded(true);
+      } catch (error) {
+        console.error('Error loading Chart.js:', error);
+        setChartLoaded(false);
+      }
+    };
+
+    loadChart();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
       <GlassCard backButton={<BackButton />}>
         {/* Top Section with Image and Results */}
-        <div className="flex flex-col md:flex-row gap-4 items-start mb-6">
+        <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
           {/* Image Column - Always visible */}
           {uploadedImage && (
-            <div className="md:w-1/3">
+            <div className="md:w-1/3 flex justify-center">
               <img 
                 src={uploadedImage} 
                 alt="Uploaded Skin Lesion" 
@@ -1157,9 +1392,43 @@ What specific aspect would you like me to explain?`;
           </div>
         </div>
         
-        {data.labels.length > 0 && data.datasets[0].data.length > 0 && (
+        {/* Chart Section with Error Handling */}
+        {chartLoaded && data && data.labels && data.labels.length > 0 && 
+         data.datasets && data.datasets[0] && data.datasets[0].data && 
+         data.datasets[0].data.length > 0 && (
           <div className={styles.chartContainer}>
-            <Bar data={data} options={options} />
+            <div style={{ position: 'relative', height: '400px', width: '100%' }}>
+              <ChartErrorBoundary>
+                <Bar data={data} options={options} />
+              </ChartErrorBoundary>
+            </div>
+          </div>
+        )}
+
+        {/* Loading state for chart */}
+        {!chartLoaded && data && data.labels && data.labels.length > 0 && (
+          <div className={styles.chartContainer}>
+            <div className="text-white text-center p-4">
+              <p>Loading chart...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Save to History Button - Moved to bottom */}
+        {currentUser && topPrediction && (
+          <div className={styles.saveToHistoryContainer}>
+            <button
+              onClick={saveToHistory}
+              className={`${styles.saveToHistoryButton} ${isSavedToHistory ? styles.saved : ''}`}
+              disabled={isSavedToHistory}
+            >
+              {isSavedToHistory ? '✓ Saved to History' : '💾 Save to History'}
+            </button>
+            {isSavedToHistory && (
+              <p className={styles.saveConfirmation}>
+                This scan has been saved to your history and can be accessed from the History page.
+              </p>
+            )}
           </div>
         )}
       </GlassCard>
@@ -1297,5 +1566,47 @@ What specific aspect would you like me to explain?`;
     </div>
   );
 };
+
+// Error boundary component for catching Chart.js errors
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+class ChartErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('Chart Error:', error);
+    console.error('Error Info:', errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="text-white text-center p-4">
+          <p>Chart could not be displayed due to an error.</p>
+          <p className="text-sm text-gray-300">
+            Error: {this.state.error?.message || 'Unknown error'}
+          </p>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 export default Results;

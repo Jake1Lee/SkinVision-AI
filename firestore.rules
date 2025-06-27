@@ -7,13 +7,26 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // Scans can be read and written by authenticated users who own them
-    match /scans/{scanId} {
+    // Scan history can only be accessed by the user who created it
+    match /scanHistory/{scanId} {
       allow read, write: if request.auth != null && 
-        (resource.data.userId == request.auth.uid || 
-         request.auth.uid == resource.data.userId);
+        (resource == null || request.auth.uid == resource.data.userId);
       allow create: if request.auth != null && 
         request.auth.uid == request.resource.data.userId;
+      allow delete: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+      allow list: if request.auth != null;
+    }
+    
+    // Alternative collection name for scans (for backward compatibility)
+    match /scans/{scanId} {
+      allow read, write: if request.auth != null && 
+        (resource == null || request.auth.uid == resource.data.userId);
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.userId;
+      allow delete: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+      allow list: if request.auth != null;
     }
   }
 }

@@ -1,0 +1,208 @@
+.container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.scanCard {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.scanCard:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.scanHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.scanInfo {
+  flex: 1;
+}
+
+.scanTitle {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.scanModel {
+  color: #ffffff;
+  font-size: 0.9rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.scanActions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.viewButton {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.viewButton:hover {
+  background: linear-gradient(135deg, #5CBF60 0%, #55b059 100%);
+  transform: translateY(-1px);
+}
+
+.downloadButton {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+}
+
+.downloadButton:hover {
+  background: linear-gradient(135deg, #42A5F5 0%, #1976D2 100%);
+  transform: translateY(-1px);
+}
+
+.deleteButton {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+}
+
+.deleteButton:hover {
+  background: linear-gradient(135deg, #f66356 0%, #e53f3f 100%);
+  transform: translateY(-1px);
+}
+
+.actionButton.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.actionButton.disabled:hover {
+  transform: none;
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+}
+
+.scanContent {
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.imageSection {
+  display: flex;
+  justify-content: center;
+}
+
+.scanImage {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.patientInfo, .resultsPreview {
+  color: white;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 4px;
+}
+
+.patientDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.patientDetails p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.patientDetails strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.topPrediction {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.topPrediction p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+
+.topPrediction strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .scanContent {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .imageSection {
+    order: -1;
+  }
+  
+  .scanImage {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .scanHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .scanActions {
+    justify-content: center;
+  }
+}

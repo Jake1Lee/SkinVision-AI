@@ -55,6 +55,11 @@ const Navbar = () => {
               <Link href="/benchmarking" className={`${styles.navButton} ${pathname === '/benchmarking' ? styles.active : ''}`}>
                 Benchmarking
               </Link>
+              {currentUser && (
+                <Link href="/history" className={`${styles.navButton} ${pathname === '/history' ? styles.active : ''}`}>
+                  History
+                </Link>
+              )}
               <Link href="/about" className={`${styles.aboutButton} ${pathname === '/about' ? styles.active : ''}`}>
                 About
               </Link>

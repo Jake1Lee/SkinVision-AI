@@ -20,6 +20,14 @@ const ModelSelection = () => {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [patientData, setPatientData] = useState({
+    age: '',
+    gender: '',
+    placement: '',
+    symptoms: '',
+    medicalHistory: ''
+  });
+  const [isPatientDataSaved, setIsPatientDataSaved] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -78,6 +86,17 @@ const ModelSelection = () => {
 
   const handleModelSelect = (modelId: string) => {
     setSelectedModel(modelId);
+  };
+
+  const handlePatientDataChange = (field: string, value: string) => {
+    setPatientData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSavePatientData = () => {
+    // Save patient data to localStorage
+    localStorage.setItem('patientData', JSON.stringify(patientData));
+    setIsPatientDataSaved(true);
+    alert('Patient data saved successfully!');
   };
 
   const handleSubmit = async () => {
@@ -158,6 +177,87 @@ const ModelSelection = () => {
           </div>
         </GlassCard>
       </div>
+
+      {/* Patient Data Card - Full Width */}
+      {uploadedImage && (
+        <div className={styles.patientDataContainer}>
+          <GlassCard className={styles.patientDataCard}>
+            <h2 className="text-xl font-bold mb-4 text-white">Patient Information</h2>
+            <div className={styles.patientForm}>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Age *</label>
+                  <input
+                    type="number"
+                    value={patientData.age}
+                    onChange={(e) => handlePatientDataChange('age', e.target.value)}
+                    className={styles.input}
+                    placeholder="Enter age"
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Gender *</label>
+                  <select
+                    value={patientData.gender}
+                    onChange={(e) => handlePatientDataChange('gender', e.target.value)}
+                    className={styles.select}
+                    required
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Image Placement *</label>
+                  <input
+                    type="text"
+                    value={patientData.placement}
+                    onChange={(e) => handlePatientDataChange('placement', e.target.value)}
+                    className={styles.input}
+                    placeholder="e.g., left arm, face, back"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Symptoms (Optional)</label>
+                  <textarea
+                    value={patientData.symptoms}
+                    onChange={(e) => handlePatientDataChange('symptoms', e.target.value)}
+                    className={styles.textarea}
+                    placeholder="Describe any symptoms (itching, pain, changes, etc.)"
+                    rows={3}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Medical History (Optional)</label>
+                  <textarea
+                    value={patientData.medicalHistory}
+                    onChange={(e) => handlePatientDataChange('medicalHistory', e.target.value)}
+                    className={styles.textarea}
+                    placeholder="Relevant medical history (allergies, previous conditions, etc.)"
+                    rows={3}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.saveButtonContainer}>
+                <button
+                  onClick={handleSavePatientData}
+                  className={`${styles.saveButton} ${isPatientDataSaved ? styles.saved : ''}`}
+                >
+                  {isPatientDataSaved ? '✓ Saved' : 'Save Patient Data'}
+                </button>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
     </div>
   );
 };
