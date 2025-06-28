@@ -16,27 +16,32 @@ const History = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!currentUser) {
-      router.push('/');
-      return;
-    }
-
-    // Load scan history from Firebase
     const loadScanHistory = async () => {
+      if (!currentUser) {
+        router.push('/');
+        return;
+      }
+
+      setLoading(true);
       try {
         const scans = await scanHistoryService.getUserScans(currentUser.uid);
         setScanHistory(scans);
-      } catch (error) {
-        console.error('Error loading scan history from Firebase:', error);
-        // Try to migrate localStorage data as fallback
-        await scanHistoryService.migrateLocalStorageToFirebase(currentUser.uid);
-        // Try loading again after migration
-        try {
-          const scans = await scanHistoryService.getUserScans(currentUser.uid);
-          setScanHistory(scans);
-        } catch (migrationError) {
-          console.error('Error after migration attempt:', migrationError);
+        
+        // Debug: Check how many scans have PDFs
+        const scansWithPdf = scans.filter((scan: any) => scan.pdfReport);
+        console.log(`📊 Loaded ${scans.length} scans, ${scansWithPdf.length} have PDFs`);
+        
+        if (scansWithPdf.length > 0) {
+          console.log('📋 Sample PDF URLs:', scansWithPdf.slice(0, 2).map((scan: any) => ({
+            id: scan.id,
+            pdfUrl: scan.pdfReport?.substring(0, 100) + '...',
+            fileName: scan.pdfFileName
+          })));
         }
+        
+      } catch (error) {
+        console.error('Error loading scan history:', error);
+        // Note: setError state not defined, just log for now
       } finally {
         setLoading(false);
       }
@@ -45,6 +50,45 @@ const History = () => {
     loadScanHistory();
   }, [currentUser, router]);
 
+  // Alternative download method using direct link navigation
+  const downloadPDFDirect = (url: string, filename: string) => {
+    console.log('🔗 Attempting direct download via link navigation...');
+    
+    try {
+      // Create a temporary anchor element
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      
+      // Add to document, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log('✅ Direct download link clicked');
+      return true;
+    } catch (error) {
+      console.error('❌ Direct download failed:', error);
+      return false;
+    }
+  };
+
+  // Debug function to inspect scan data
+  const debugScanData = (scan: any) => {
+    console.log('🔍 Debug scan data:', {
+      id: scan.id,
+      hasPdfReport: !!scan.pdfReport,
+      pdfReportType: typeof scan.pdfReport,
+      pdfReportLength: scan.pdfReport?.length,
+      pdfReportPreview: scan.pdfReport?.substring(0, 100) + '...',
+      pdfFileName: scan.pdfFileName,
+      timestamp: scan.timestamp,
+      timestampType: typeof scan.timestamp
+    });
+  };
+
   const handleDownloadPDF = async (scanId: string | undefined) => {
     if (!scanId) {
       alert('Scan ID not available');
@@ -52,44 +96,65 @@ const History = () => {
     }
     
     const scan = scanHistory.find(s => s.id === scanId);
-    if (scan && scan.pdfReport) {
-      try {
-        console.log('📥 Downloading PDF from Firebase:', scan.pdfReport);
-        
-        // Fetch the PDF from Firebase Storage URL
-        const response = await fetch(scan.pdfReport);
-        if (!response.ok) {
-          throw new Error('Failed to fetch PDF from cloud storage');
-        }
-        
-        const blob = await response.blob();
-        
-        // Create download link
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        
-        // Extract date from timestamp (handle different timestamp formats)
-        let dateString = 'unknown';
-        if (typeof scan.timestamp === 'string') {
-          dateString = scan.timestamp.includes('T') ? scan.timestamp.split('T')[0] : scan.timestamp;
-        }
-        
-        link.download = scan.pdfFileName || `medical_report_${dateString}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Clean up the object URL
-        URL.revokeObjectURL(url);
-        
-        console.log('✅ PDF downloaded successfully');
-      } catch (error) {
-        console.error('Error downloading PDF:', error);
-        alert('Error downloading PDF report. The file might not be available in cloud storage.');
-      }
-    } else {
+    if (!scan || !scan.pdfReport) {
       alert('PDF report not available for this scan.');
+      return;
+    }
+    
+    // Debug the scan data first
+    debugScanData(scan);
+    
+    console.log('📥 Starting PDF download process...');
+    
+    // Calculate filename
+    let dateString = 'unknown';
+    try {
+      if (scan.timestamp) {
+        let date: Date;
+        if (typeof scan.timestamp === 'string') {
+          date = new Date(scan.timestamp);
+        } else if (scan.timestamp && typeof scan.timestamp === 'object') {
+          if ('toDate' in scan.timestamp && typeof scan.timestamp.toDate === 'function') {
+            date = scan.timestamp.toDate();
+          } else if ('seconds' in scan.timestamp) {
+            date = new Date(scan.timestamp.seconds * 1000);
+          } else {
+            date = new Date();
+          }
+        } else {
+          date = new Date();
+        }
+        dateString = date.toISOString().split('T')[0];
+      }
+    } catch (timestampError) {
+      console.warn('Error parsing timestamp:', timestampError);
+      dateString = new Date().toISOString().split('T')[0];
+    }
+    
+    const fileName = scan.pdfFileName || `medical_report_${dateString}.pdf`;
+    console.log('📄 Target filename:', fileName);
+    
+    // Method 1: Direct link download (most reliable, no fetch required)
+    console.log('🔄 Attempting direct download method...');
+    if (downloadPDFDirect(scan.pdfReport, fileName)) {
+      console.log('✅ Direct download initiated');
+      alert('PDF download started! Check your Downloads folder.');
+      return;
+    }
+    
+    // Method 2: Open in new tab as fallback (no fetch required)
+    console.log('� Fallback: Opening PDF in new tab...');
+    try {
+      const newTab = window.open(scan.pdfReport, '_blank');
+      if (newTab) {
+        console.log('✅ PDF opened in new tab');
+        alert('PDF opened in a new tab. You can download it manually from there.');
+      } else {
+        alert('Popup blocked. Please allow popups and try again, or copy this URL to download manually: ' + scan.pdfReport);
+      }
+    } catch (error) {
+      console.error('❌ All methods failed:', error);
+      alert('Unable to download PDF. Please contact support.');
     }
   };
 
