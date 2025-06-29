@@ -93,11 +93,17 @@ def analyze_image():
     
     if not os.path.exists(filepath):
         logger.error(f"File not found at path: {filepath}")
-        # List files in upload directory for debugging
+        # Enhanced debugging for file matching issues
         if os.path.exists(app.config['UPLOAD_FOLDER']):
             files = os.listdir(app.config['UPLOAD_FOLDER'])
-            logger.info(f"Files in upload directory: {files}")
-        return jsonify({'error': 'File not found'}), 404
+            logger.error(f"Available files in upload directory: {files}")
+            logger.error(f"Requested filename: '{original_filename}'")
+            logger.error(f"Full requested path: '{filepath}'")
+            # Check for similar filenames
+            similar_files = [f for f in files if original_filename.lower() in f.lower() or f.lower() in original_filename.lower()]
+            if similar_files:
+                logger.error(f"Similar filenames found: {similar_files}")
+        return jsonify({'error': f'File not found: {original_filename}. Please ensure the file was uploaded successfully.'}), 404
     
     try:
         logger.info("Starting prediction...")

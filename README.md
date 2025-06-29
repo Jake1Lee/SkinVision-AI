@@ -145,6 +145,42 @@ curl -X POST -F "file=@test_image.jpg" http://localhost:5000/api/upload
 2. **Model Loading Fails**: Ensure Git LFS pulled files (`git lfs pull`)
 3. **CORS Errors**: Check backend CORS configuration includes your domain
 4. **Memory Issues**: Add swap file for droplets with <4GB RAM
+5. **API Analyze 404 Errors**: File not found after upload (see below)
+
+### 🔧 API Analyze 404 Error Fix
+If you get 404 errors when analyzing uploaded images (especially from mobile):
+
+**Problem**: The filename sent to `/api/analyze` doesn't match the actual saved filename.
+
+**Solution**: Always use the exact filename returned by `/api/upload`:
+```javascript
+// ✅ Correct way
+const uploadResponse = await fetch('/api/upload', {...});
+const uploadData = await uploadResponse.json();
+const filename = uploadData.filename; // Use this exact value
+
+const analyzeResponse = await fetch('/api/analyze', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ 
+    filename: filename, // Use the returned filename
+    model: selectedModel 
+  })
+});
+
+// ❌ Wrong way - guessing the filename
+const analyzeResponse = await fetch('/api/analyze', {
+  body: JSON.stringify({ 
+    filename: originalFile.name, // This might not match!
+    model: selectedModel 
+  })
+});
+```
+
+**Debug Steps**:
+1. Check browser console for the exact filename being sent
+2. Check backend logs for available files vs requested filename
+3. Ensure no race condition between upload and analyze calls
 
 ### Debug Commands
 ```bash
