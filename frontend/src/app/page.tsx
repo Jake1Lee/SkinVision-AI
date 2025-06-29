@@ -53,7 +53,9 @@ export default function Home() {
 
       const data = await response.json();
       if (data.success) {
-        localStorage.setItem('uploadedImageName', file.name);
+        // IMPORTANT: Use the filename returned by the backend, not the original filename
+        // The backend sanitizes filenames (spaces become underscores, etc.)
+        localStorage.setItem('uploadedImageName', data.filename);
       } else {
         alert('Error uploading image: ' + data.error);
       }
