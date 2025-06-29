@@ -1,0 +1,269 @@
+/* Main container that centers both navbar and auth button */
+.navbarContainer {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.navbar {
+  background: #966fd670;
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  min-width: 400px;
+}
+
+.authSection {
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.leftSection {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.homeButton,
+.aboutButton,
+.navButton {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  font-family: 'Red Rose', cursive;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.homeButton:hover,
+.aboutButton:hover,
+.navButton:hover {
+  background-color: rgba(150, 111, 214, 0.4);
+}
+
+.homeButton.active,
+.aboutButton.active,
+.navButton.active {
+  background-color: rgba(150, 111, 214, 0.8);
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(150, 111, 214, 0.3);
+}
+
+.icon {
+  font-size: 0.9rem;
+}
+
+/* User Section */
+.userSection {
+  position: relative;
+}
+
+.userButton {
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Red Rose', cursive;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.userButton:hover {
+  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(110, 72, 170, 0.4);
+}
+
+.userName {
+  font-weight: 600;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userRole {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+/* User Menu */
+.userMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 250px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1001;
+}
+
+.userInfo {
+  margin-bottom: 12px;
+}
+
+.userInfo strong {
+  color: #1a1a1a;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.userInfo small {
+  color: #4a4a4a;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.userFullName {
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.userDetails {
+  color: #4a4a4a;
+  margin: 0 0 2px 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.menuDivider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.15);
+  margin: 12px 0;
+  border: none;
+}
+
+.menuItem {
+  width: 100%;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.menuItem:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.logoutButton {
+  width: 100%;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* Login Button */
+.loginButton {
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Red Rose', cursive;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.loginButton:hover {
+  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(110, 72, 170, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbarContainer {
+    flex-direction: column;
+    gap: 10px;
+    top: 10px;
+  }
+
+  .navbar {
+    min-width: auto;
+    width: calc(100vw - 40px);
+    max-width: 400px;
+  }
+
+  .container {
+    justify-content: center;
+  }
+
+  .leftSection {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .authSection {
+    justify-content: center;
+  }
+
+  .userName {
+    max-width: 100px;
+  }
+
+  .userRole {
+    display: none;
+  }
+}
