@@ -21,7 +21,7 @@ wheels/
 *.egg
 
 # PyTorch models (large files)
-*.pth
+# *.pth
 *.pt
 *.pkl
 
@@ -53,9 +53,9 @@ tmp/
 Thumbs.db
 
 # Results and cache files - IMPORTANT: Keep only essential model files
-results/*.png
-results/*.html
-results/*.json
+# results/*.png
+# results/*.html
+# results/*.json
 *.cache
 
 # Keep the trained models but exclude training artifacts
