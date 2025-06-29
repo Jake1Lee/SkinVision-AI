@@ -75,7 +75,12 @@ const Results = () => {
         const model = localStorage.getItem('selectedModel') || 'resnet50';
         setSelectedModel(model);
 
-        const response = await fetch('http://localhost:5000/api/analyze', {
+        // Use relative URL for production, absolute for development
+        const apiUrl = process.env.NODE_ENV === 'production' 
+          ? '/api/analyze' 
+          : 'http://localhost:5000/api/analyze';
+
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

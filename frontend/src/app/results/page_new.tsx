@@ -43,7 +43,12 @@ const Results = () => {
         const filename = localStorage.getItem('uploadedImageName') || 'skin_lesion.jpg';
         const model = localStorage.getItem('selectedModel') || 'resnet50';
 
-        const response = await fetch('http://localhost:5000/api/analyze', {
+        // Use relative URL for production, absolute for development
+        const apiUrl = process.env.NODE_ENV === 'production' 
+          ? '/api/analyze' 
+          : 'http://localhost:5000/api/analyze';
+
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -156,7 +161,7 @@ const Results = () => {
             <h2 className="text-xl font-semibold mb-4 text-red-400">Analysis Error</h2>
             <p className="mb-4">{error}</p>
             <p className="text-sm text-gray-300">
-              Make sure the Flask backend server is running on http://localhost:5000
+              Make sure the backend server is running and accessible
             </p>
           </div>
         </GlassCard>
