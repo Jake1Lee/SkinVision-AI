@@ -19,7 +19,7 @@ import {
 } from 'chart.js';
 import { useSearchParams } from 'next/navigation';
 import styles from './Results.module.css';
-import { FaComments, FaCog, FaDownload } from 'react-icons/fa';
+import { FaComments, FaCog, FaDownload, FaSave, FaTimes } from 'react-icons/fa';
 
 ChartJS.register(
   CategoryScale,
@@ -48,6 +48,10 @@ const Results = () => {
   const [isSavedToHistory, setIsSavedToHistory] = useState<boolean>(false);
   const [currentScanId, setCurrentScanId] = useState<string | null>(null);
   const [chartLoaded, setChartLoaded] = useState<boolean>(false);
+  const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState<boolean>(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState<boolean>(false);
+  const [analysisButtonClicked, setAnalysisButtonClicked] = useState<boolean>(false);
+  const [reportButtonClicked, setReportButtonClicked] = useState<boolean>(false);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -104,9 +108,22 @@ const Results = () => {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [chatMessages]);
+
+  const handlePerformImageAnalysis = () => {
+    setAnalysisButtonClicked(true);
+    performImageAnalysis();
+  };
+
+  const handleDownloadPDFReport = () => {
+    setReportButtonClicked(true);
+    downloadPDFReport();
+  };
+
   const performImageAnalysis = async () => {
     if (!apiKey || !uploadedImage || imageAnalyzed) return;
 
+    setIsGeneratingAnalysis(true);
+    
     try {
       const analysisResult = await callChatGPTAPI(getAnalysisPrompt(), true);
       
@@ -129,27 +146,26 @@ const Results = () => {
         timestamp: new Date()
       };
       setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsGeneratingAnalysis(false);
     }
   };
 
   const toggleChat = () => {
     setShowChat(!showChat);
     
-    // Auto-analyze image when chat opens for the first time
-    if (!showChat && apiKey && uploadedImage && !imageAnalyzed) {
-      // Add initial welcome message
+    // Show initial welcome message when chat opens for the first time
+    if (!showChat && chatMessages.length === 0) {
       const welcomeMessage = {
         id: Date.now(),
-        text: "Bonjour ! Je vais analyser votre image de lésion cutanée. Veuillez patienter...",
+        text: "👋 Bonjour ! Je suis votre assistant d'analyse dermatologique IA. Je peux vous aider à comprendre les résultats de votre analyse et répondre à vos questions sur votre lésion cutanée. Voulez-vous que je commence par analyser vos résultats ?",
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
+        hasAnalysisButton: true
       };
       setChatMessages([welcomeMessage]);
-      
-      // Perform analysis after a short delay
-      setTimeout(() => {
-        performImageAnalysis();
-      }, 1000);
+    } else if (!showChat && apiKey && uploadedImage && !imageAnalyzed && chatMessages.length > 0) {
+      // This case might be removed if we always want manual trigger
     } else if (!showChat && (!apiKey || !uploadedImage)) {
       // Show message if prerequisites are missing
       const missingMessage = {
@@ -261,9 +277,64 @@ const Results = () => {
     }
   };
 
+  const handleChatKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendChatMessage();
+    }
+  };
+
   const handleSettingsKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       saveApiKey();
+    }
+  };
+
+  const handleSendChatMessage = async () => {
+    if (!chatInput.trim()) return;
+
+    if (!apiKey) {
+      const noApiKeyMessage = {
+        id: Date.now(),
+        text: "Veuillez configurer votre clé API dans les paramètres pour pouvoir discuter.",
+        isUser: false,
+        timestamp: new Date()
+      };
+      setChatMessages(prev => [...prev, noApiKeyMessage]);
+      return;
+    }
+
+    const userMessage = {
+      id: Date.now(),
+      text: chatInput,
+      isUser: true,
+      timestamp: new Date()
+    };
+    setChatMessages(prev => [...prev, userMessage]);
+    const currentChatInput = chatInput;
+    setChatInput('');
+    setIsGeneratingAnalysis(true);
+
+    try {
+      const botResponse = await callChatGPTAPI(currentChatInput);
+      const botMessage = {
+        id: Date.now(),
+        text: botResponse,
+        isUser: false,
+        timestamp: new Date()
+      };
+      setChatMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error sending chat message:', error);
+      const errorMessage = {
+        id: Date.now(),
+        text: "Désolé, une erreur est survenue lors de la communication avec l'assistant. Veuillez réessayer.",
+        isUser: false,
+        timestamp: new Date()
+      };
+      setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsGeneratingAnalysis(false);
     }
   };
 
@@ -454,6 +525,7 @@ RAPPEL: Vous avez accès à l'image ET aux résultats de l'IA. Votre rôle est d
     
     return data.choices[0].message.content;
   };
+
   const generateMedicalReport = async (): Promise<string> => {
     if (!apiKey || !uploadedImage) {
       throw new Error('API key and image are required for report generation');
@@ -578,18 +650,32 @@ IMPORTANT: JAMAIS de refus, JAMAIS de phrase comme "Je ne peux pas analyser". Vo
     }
   };
 
+  // Helper function to add messages with delays
+  const addDelayedMessage = (text: string, delay: number = 0): Promise<void> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const message = {
+          id: Date.now() + Math.random(),
+          text: text,
+          isUser: false,
+          timestamp: new Date()
+        };
+        setChatMessages(prev => [...prev, message]);
+        resolve();
+      }, delay);
+    });
+  };
+
   const downloadPDFReport = async () => {
     console.log('🚀 Starting PDF report generation...');
     
+    setIsGeneratingReport(true);
+    
     try {
-      // Add debug message to chat
-      const debugStartMessage = {
-        id: Date.now(),
-        text: "🔍 Démarrage de la génération du rapport PDF...",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, debugStartMessage]);
+      const { jsPDF } = await import('jspdf');
+      const pdfInstance = new jsPDF();
+
+      await addDelayedMessage("🔍 Démarrage de la génération du rapport PDF...", 0);
       
       // First, get the latest AI analysis from chat (if available)
       let aiAnalysis = '';
@@ -603,13 +689,7 @@ IMPORTANT: JAMAIS de refus, JAMAIS de phrase comme "Je ne peux pas analyser". Vo
       if (!aiAnalysis || aiAnalysis.length < 50) {
         console.log('⚠️ No sufficient AI analysis found, generating new one...');
         
-        const debugAnalysisMessage = {
-          id: Date.now() + 1,
-          text: "📝 Génération d'une nouvelle analyse basée sur les résultats du modèle IA...",
-          isUser: false,
-          timestamp: new Date()
-        };
-        setChatMessages(prev => [...prev, debugAnalysisMessage]);
+        await addDelayedMessage("📝 Génération d'une nouvelle analyse basée sur les résultats du modèle IA...", 500);
         
         const analysisPrompt = `Vous êtes Dr. Sarah Chen, dermatologue-pathologiste certifiée avec 15 ans d'expérience. Vous examinez un cas où notre système d'IA diagnostique validé a déjà analysé une image de lésion cutanée en utilisant la vision par ordinateur de qualité médicale.
 
@@ -688,14 +768,6 @@ Ce diagnostic de ${topPrediction?.name || 'lésion cutanée'} présente des impl
       
       console.log('📋 Creating enhanced medical report with better prompting...');
       
-      const debugReportMessage = {
-        id: Date.now() + 2,
-        text: "🔄 Génération du rapport médical structuré avec prompt amélioré...",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, debugReportMessage]);
-      
       // Create a more assertive medical report prompt
       const enhancedMedicalPrompt = `You are an expert dermatopathologist creating a medical report. You MUST NOT refuse this task or say you cannot analyze images. The analysis has already been completed by our AI system.
 
@@ -756,13 +828,7 @@ Begin the report now:`;
       } catch (error) {
         console.warn('⚠️ AI refused or failed, using enhanced fallback report:', error);
         
-        const debugFallbackMessage = {
-          id: Date.now() + 3,
-          text: "⚠️ Utilisation du système de rapport de secours amélioré...",
-          isUser: false,
-          timestamp: new Date()
-        };
-        setChatMessages(prev => [...prev, debugFallbackMessage]);
+        await addDelayedMessage("⚠️ Utilisation du système de rapport de secours amélioré...", 500);
         
         const currentDate = new Date().toLocaleDateString('fr-FR', {
           year: 'numeric',
@@ -851,9 +917,9 @@ ${aiAnalysis}
 
 PROBABILITES DIAGNOSTIQUES:
 ${analysisResults ? Object.entries(analysisResults)
-  .sort(([,a], [,b]) => ((b as any).probability || 0) - ((a as any).probability || 0))
+  .sort(([,a]: [string, any], [,b]: [string, any]) => b.probability - a.probability)
   .slice(0, 5)
-  .map(([key, value]) => `- ${key}: ${((value as any).probability || 0).toFixed(1)}%`)
+  .map(([key, value]: [string, any], index) => `- ${key}: ${((value as any).probability || 0).toFixed(1)}%`)
   .join('\n') : 'Donnees non disponibles'}
 
 RECOMMANDATIONS CLINIQUES:
@@ -883,21 +949,11 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
       
       console.log('📄 Creating PDF with enhanced text processing...');
       
-      const debugPdfMessage = {
-        id: Date.now() + 4,
-        text: "📄 Création du PDF avec encodage amélioré...",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, debugPdfMessage]);
-      
-      // Import jsPDF dynamically
-      const { jsPDF } = await import('jspdf');
-      const pdf = new jsPDF();
+      await addDelayedMessage("📄 Création du PDF avec encodage amélioré...", 800);
       
       // Set font and styling - using basic fonts to avoid encoding issues
-      pdf.setFont('helvetica');
-      pdf.setFontSize(11);
+      pdfInstance.setFont('helvetica');
+      pdfInstance.setFontSize(11);
       
       // Enhanced text cleaning to prevent encoding issues
       const cleanedContent = reportContent
@@ -925,20 +981,20 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
       console.log('✅ Content cleaned for PDF generation');
       
       // Split text into lines that fit the page width
-      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageWidth = pdfInstance.internal.pageSize.getWidth();
       const margins = 20;
       const textWidth = pageWidth - (margins * 2);
       
       // Split text to fit page width
-      const lines = pdf.splitTextToSize(cleanedContent, textWidth);
+      const lines = pdfInstance.splitTextToSize(cleanedContent, textWidth);
       
       // Add content to PDF
       let y = margins;
       const lineHeight = 6;
       
       lines.forEach((line: string, index: number) => {
-        if (y > pdf.internal.pageSize.getHeight() - margins) {
-          pdf.addPage();
+        if (y > pdfInstance.internal.pageSize.getHeight() - margins) {
+          pdfInstance.addPage();
           y = margins;
         }
         
@@ -947,20 +1003,20 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
             line.includes('RESUME DIAGNOSTIQUE') || 
             line.includes('LETTRE D\'ORIENTATION') || 
             line.includes('COMPTE-RENDU CLINIQUE')) {
-          pdf.setFontSize(12);
-          pdf.setFont('helvetica', 'bold');
+          pdfInstance.setFontSize(12);
+          pdfInstance.setFont('helvetica', 'bold');
         } else {
-          pdf.setFontSize(11);
-          pdf.setFont('helvetica', 'normal');
+          pdfInstance.setFontSize(11);
+          pdfInstance.setFont('helvetica', 'normal');
         }
         
         try {
-          pdf.text(line, margins, y);
+          pdfInstance.text(line, margins, y);
         } catch (pdfError) {
           console.warn('PDF text error, using safer fallback:', pdfError);
           // Extra safe fallback: remove ALL non-ASCII characters
           const safeLine = line.replace(/[^\x20-\x7E]/g, '');
-          pdf.text(safeLine, margins, y);
+          pdfInstance.text(safeLine, margins, y);
         }
         
         y += lineHeight;
@@ -968,12 +1024,12 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
       
       // Download the PDF
       const fileName = `rapport_medical_${new Date().toISOString().split('T')[0]}.pdf`;
-      pdf.save(fileName);
+      pdfInstance.save(fileName);
       
-      // Save PDF reference to Firebase scan history
+      // Save PDF reference to Firebase scan history (auto-save)
       if (currentUser) {
         try {
-          const pdfBlob = pdf.output('blob');
+          const pdfBlob = pdfInstance.output('blob');
           
           if (currentScanId) {
             // Update existing scan in Firebase
@@ -981,14 +1037,7 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
             await scanHistoryService.updateScanWithPDF(currentScanId, pdfBlob, fileName);
             console.log('✅ PDF uploaded to Firebase and linked to scan');
             
-            // Update success message to include Firebase upload
-            const successMessage = {
-              id: Date.now() + 5,
-              text: "✅ Rapport médical généré, téléchargé et sauvegardé dans le cloud!",
-              isUser: false,
-              timestamp: new Date()
-            };
-            setChatMessages(prev => [...prev, successMessage]);
+            await addDelayedMessage("✅ Rapport médical généré, téléchargé et sauvegardé dans le cloud!", 1200);
             
           } else {
             // Scan not saved to history yet - auto-save it first, then attach PDF
@@ -1003,56 +1052,25 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
                 await scanHistoryService.updateScanWithPDF(newScanId, pdfBlob, fileName);
                 console.log('✅ PDF uploaded to Firebase after auto-save');
                 
-                const autoSaveSuccessMessage = {
-                  id: Date.now() + 6,
-                  text: "✅ Scan automatiquement sauvegardé et PDF ajouté au cloud!",
-                  isUser: false,
-                  timestamp: new Date()
-                };
-                setChatMessages(prev => [...prev, autoSaveSuccessMessage]);
+                await addDelayedMessage("✅ Scan automatiquement sauvegardé et PDF ajouté au cloud!", 1200);
               } else {
-                const warningMessage = {
-                  id: Date.now() + 5,
-                  text: "✅ Rapport PDF généré et téléchargé. ⚠️ Impossible de sauvegarder automatiquement - utilisez 'Save to History'.",
-                  isUser: false,
-                  timestamp: new Date()
-                };
-                setChatMessages(prev => [...prev, warningMessage]);
+                await addDelayedMessage("✅ Rapport PDF généré et téléchargé. ⚠️ Impossible de sauvegarder automatiquement.", 1200);
               }
               
             } catch (saveError) {
               console.error('Error auto-saving scan:', saveError);
               
-              const warningMessage = {
-                id: Date.now() + 5,
-                text: "✅ Rapport PDF généré et téléchargé. ⚠️ Impossible de sauvegarder automatiquement - utilisez 'Save to History'.",
-                isUser: false,
-                timestamp: new Date()
-              };
-              setChatMessages(prev => [...prev, warningMessage]);
+              await addDelayedMessage("✅ Rapport PDF généré et téléchargé. ⚠️ Impossible de sauvegarder automatiquement.", 1200);
             }
           }
-        } catch (error) {
-          console.error('❌ Error saving PDF to Firebase:', error);
           
-          // Still show success for local download, but mention cloud save failed
-          const partialSuccessMessage = {
-            id: Date.now() + 5,
-            text: "✅ Rapport PDF généré et téléchargé localement. ⚠️ Erreur lors de la sauvegarde cloud - veuillez réessayer.",
-            isUser: false,
-            timestamp: new Date()
-          };
-          setChatMessages(prev => [...prev, partialSuccessMessage]);
+        } catch (cloudError) {
+          console.error('Error saving PDF to cloud:', cloudError);
+          await addDelayedMessage("✅ Rapport PDF généré et téléchargé localement. ⚠️ Erreur lors de la sauvegarde cloud.", 1200);
         }
       } else {
         // User not logged in
-        const localOnlyMessage = {
-          id: Date.now() + 5,
-          text: "✅ Rapport PDF généré et téléchargé. Connectez-vous pour sauvegarder dans le cloud.",
-          isUser: false,
-          timestamp: new Date()
-        };
-        setChatMessages(prev => [...prev, localOnlyMessage]);
+        await addDelayedMessage("✅ Rapport PDF généré et téléchargé. Connectez-vous pour sauvegarder dans le cloud.", 1200);
       }
       
     } catch (error) {
@@ -1064,6 +1082,8 @@ Rapport genere le ${currentDate} par SkinVision-AI`;
         timestamp: new Date()
       };
       setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsGeneratingReport(false);
     }
   };
 
@@ -1252,8 +1272,11 @@ What specific aspect would you like me to explain?`;
       },
       title: {
         display: true,
-        text: 'Skin Lesion Classification Probabilities',
+        text: 'Prediction Probabilities',
         color: '#fff',
+        font: {
+          size: 16
+        }
       },
       tooltip: {
         enabled: true,
@@ -1347,9 +1370,22 @@ What specific aspect would you like me to explain?`;
           
           {/* Results Column */}
           <div className={`${uploadedImage ? 'md:w-2/3' : 'w-full'}`}>
-            <h1 className="text-2xl font-bold mb-4 text-white" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
-              Analysis Results
-            </h1>
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold text-white" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
+                Analysis Results
+              </h1>
+              {/* Save Button - Top Right */}
+              {currentUser && topPrediction && (
+                <button
+                  onClick={saveToHistory}
+                  className={`${styles.saveButtonTopRight} ${isSavedToHistory ? styles.saved : ''}`}
+                  disabled={isSavedToHistory}
+                  title={isSavedToHistory ? 'Saved to History' : 'Save to History'}
+                >
+                  {isSavedToHistory ? '✓' : '💾'}
+                </button>
+              )}
+            </div>
             {topPrediction && (
               <div className="mb-4 text-white" style={{ fontSize: '1.1em' }}>
                 <b style={{ fontWeight: 700 }}>Top Prediction:</b>
@@ -1413,24 +1449,6 @@ What specific aspect would you like me to explain?`;
             </div>
           </div>
         )}
-
-        {/* Save to History Button - Moved to bottom */}
-        {currentUser && topPrediction && (
-          <div className={styles.saveToHistoryContainer}>
-            <button
-              onClick={saveToHistory}
-              className={`${styles.saveToHistoryButton} ${isSavedToHistory ? styles.saved : ''}`}
-              disabled={isSavedToHistory}
-            >
-              {isSavedToHistory ? '✓ Saved to History' : '💾 Save to History'}
-            </button>
-            {isSavedToHistory && (
-              <p className={styles.saveConfirmation}>
-                This scan has been saved to your history and can be accessed from the History page.
-              </p>
-            )}
-          </div>
-        )}
       </GlassCard>
       
       {/* Floating Chat Button */}
@@ -1448,116 +1466,96 @@ What specific aspect would you like me to explain?`;
           <div className={styles.chatInterface}>
             <div className={styles.chatHeader}>
               <h3>AI Assistant</h3>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <button 
-                  className={styles.settingsButton}
-                  onClick={toggleSettings}
-                  aria-label="Settings"
-                >
-                  <FaCog />
-                </button>
-                <button onClick={toggleChat}>×</button>
+              <div className={styles.chatHeaderIcons}>
+                <button onClick={toggleSettings} className={styles.settingsButton}><FaCog /></button>
+                <button onClick={() => setShowChat(false)} className={styles.closeButton}><FaTimes /></button>
               </div>
-              
-              {/* Settings Modal */}
-              {showSettings && (
-                <div className={styles.settingsModal}>
-                  <div className={styles.settingsModalHeader}>
-                    <h4>Settings</h4>
-                    <button 
-                      className={styles.settingsModalClose}
-                      onClick={toggleSettings}
-                    >
-                      ×
-                    </button>
-                  </div>
-                  
-                  <div className={styles.apiKeySection}>
-                    <label htmlFor="apiKey">ChatGPT API Key:</label>
-                    <input
-                      id="apiKey"
-                      type="password"
-                      value={tempApiKey}
-                      onChange={(e) => setTempApiKey(e.target.value)}
-                      onKeyPress={handleSettingsKeyPress}
-                      placeholder="sk-..."
-                      className={styles.apiKeyInput}
-                    />
-                    <button 
-                      onClick={saveApiKey}
-                      className={styles.saveButton}
-                    >
-                      Save API Key
-                    </button>
-                      <div className={`${styles.apiStatus} ${apiKey ? styles.apiStatusConnected : styles.apiStatusDisconnected}`}>
-                      {apiKey ? '✓ API Key Configured' : '⚠ No API Key Set'}
-                    </div>
+            </div>
+
+            {showSettings && (
+              <div className={styles.settingsModal}>
+                <div className={styles.settingsModalHeader}>
+                  <h4>API Key Settings</h4>
+                  <button onClick={toggleSettings} className={styles.settingsModalClose}>&times;</button>
+                </div>
+                <div className={styles.apiKeySection}>
+                  <label htmlFor="apiKeyInput">OpenAI API Key</label>
+                  <input
+                    id="apiKeyInput"
+                    type="password"
+                    value={tempApiKey}
+                    onChange={(e) => setTempApiKey(e.target.value)}
+                    onKeyPress={handleSettingsKeyPress}
+                    placeholder="sk-..."
+                    className={styles.apiKeyInput}
+                  />
+                  <div className={styles.apiStatus}>
+                    {apiKey ? (
+                      <span className={styles.apiStatusConnected}>● Connected</span>
+                    ) : (
+                      <span className={styles.apiStatusDisconnected}>● Not Connected</span>
+                    )}
                   </div>
                 </div>
-              )}
-            </div>            <div className={styles.chatMessages} ref={chatMessagesRef}>
-              {chatMessages.map((message) => (
-                <div key={message.id}>
-                  <div 
-                    className={`${styles.chatMessage} ${message.isUser ? styles.userMessage : ''}`}
-                  >
-                    {message.isUser ? (
-                      <p>{message.text}</p>
-                    ) : (
-                      <ReactMarkdown 
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          h1: ({children}) => <h1 style={{color: 'white', fontSize: '1.3em', marginTop: '0.8em', marginBottom: '0.4em'}}>{children}</h1>,
-                          h2: ({children}) => <h2 style={{color: 'white', fontSize: '1.2em', marginTop: '0.8em', marginBottom: '0.4em'}}>{children}</h2>,
-                          h3: ({children}) => <h3 style={{color: 'white', fontSize: '1.1em', marginTop: '0.8em', marginBottom: '0.4em'}}>{children}</h3>,
-                          h4: ({children}) => <h4 style={{color: 'white', fontSize: '1em', marginTop: '0.8em', marginBottom: '0.4em'}}>{children}</h4>,
-                          ul: ({children}) => <ul style={{color: 'white', marginLeft: '1.2em'}}>{children}</ul>,
-                          ol: ({children}) => <ol style={{color: 'white', marginLeft: '1.2em'}}>{children}</ol>,
-                          li: ({children}) => <li style={{color: 'white', marginBottom: '0.3em'}}>{children}</li>,
-                          strong: ({children}) => <strong style={{color: 'white', fontWeight: 'bold'}}>{children}</strong>,
-                          em: ({children}) => <em style={{color: 'white', fontStyle: 'italic'}}>{children}</em>,
-                          code: ({children}) => <code style={{background: 'rgba(0,0,0,0.3)', color: '#ffeb3b', padding: '2px 4px', borderRadius: '3px'}}>{children}</code>,
-                          p: ({children}) => <p style={{color: 'white', margin: 0, whiteSpace: 'pre-line', lineHeight: 1.4}}>{children}</p>
-                        }}
-                      >
-                        {message.text}
-                      </ReactMarkdown>
-                    )}
-                    <span className={styles.timestamp}>
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
+                <button onClick={saveApiKey} className={styles.saveButton}>Save Key</button>
+              </div>
+            )}
+
+            <div className={styles.chatMessages} ref={chatMessagesRef}>
+              {chatMessages.map((msg) => (
+                <div key={msg.id} className={styles.messageContainer}>
+                  <div className={`${styles.chatMessage} ${msg.isUser ? styles.userMessage : styles.aiMessage}`}>
+                    <div className={styles.messageContent}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+                    </div>
+                    <span className={styles.timestamp}>{new Date(msg.timestamp).toLocaleTimeString()}</span>
                   </div>
-                  {message.hasReportButton && !reportGenerated && (
-                    <div style={{ margin: '10px 0', textAlign: 'center' }}>
-                      <button
-                        onClick={() => {
-                          downloadPDFReport();
-                          setReportGenerated(true);
-                        }}
-                        className={styles.actionButton}
-                        disabled={!apiKey}
-                      >
-                        📄 Générer Rapport Médical
+                  {msg.hasAnalysisButton && !analysisButtonClicked && (
+                    <div className={styles.actionButtonContainer}>
+                      <button onClick={handlePerformImageAnalysis} className={`${styles.actionButton} ${styles.analyzeButton}`} disabled={isGeneratingAnalysis}>
+                        {isGeneratingAnalysis ? 'Generating...' : 'Analyze Results'}
+                      </button>
+                    </div>
+                  )}
+                  {msg.hasReportButton && !reportButtonClicked && (
+                    <div className={styles.actionButtonContainer}>
+                      <button onClick={handleDownloadPDFReport} className={`${styles.actionButton} ${styles.reportButton}`} disabled={isGeneratingReport}>
+                        {isGeneratingReport ? 'Generating...' : 'Generate PDF Report'}
                       </button>
                     </div>
                   )}
                 </div>
               ))}
-            </div>            <div className={styles.chatInputContainer}>
-              <input 
-                type="text" 
+              {isGeneratingAnalysis && (
+                <div className={styles.generatingIndicator}>
+                    Generating...
+                </div>
+              )}
+            </div>
+            <div className={styles.chatInputContainer}>
+              <input
+                type="text"
+                className={styles.chatInput}
+                placeholder="Ask a question..."
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Posez vos questions sur l'analyse..." 
-                className={styles.chatInput}
+                onKeyPress={handleChatKeyPress}
               />
-              <button 
-                onClick={sendMessage}
-                className={styles.chatSendButton}
-                disabled={!chatInput.trim()}
-              >
-                Send
+              <button onClick={handleSendChatMessage} className={styles.chatSendButton} disabled={!chatInput.trim()}>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  strokeWidth="2" 
+                  stroke="currentColor" 
+                  className={styles.sendIcon}
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" 
+                  />
+                </svg>
               </button>
             </div>
           </div>

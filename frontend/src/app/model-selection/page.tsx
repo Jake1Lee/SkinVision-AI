@@ -96,7 +96,7 @@ const ModelSelection = () => {
     // Save patient data to localStorage
     localStorage.setItem('patientData', JSON.stringify(patientData));
     setIsPatientDataSaved(true);
-    alert('Patient data saved successfully!');
+    console.log('Patient data saved successfully!');
   };
 
   const handleSubmit = async () => {
@@ -124,13 +124,13 @@ const ModelSelection = () => {
         // Check if it's a network error (backend not available)
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         if (errorMessage.includes('Network Error') || errorMessage.includes('ERR_CONNECTION_REFUSED')) {
-          alert('Backend server is not running. Please start the Flask server (python app.py) in the backend folder to perform analysis.');
+          console.error('Backend server is not running. Please start the Flask server (python app.py) in the backend folder to perform analysis.');
         } else {
-          alert('Error analyzing image: ' + errorMessage);
+          console.error('Error analyzing image: ' + errorMessage);
         }
       }
     } else {
-      alert('Please select a model and upload an image.');
+      console.warn('Please select a model and upload an image.');
     }
   };
 

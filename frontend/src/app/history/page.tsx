@@ -91,13 +91,13 @@ const History = () => {
 
   const handleDownloadPDF = async (scanId: string | undefined) => {
     if (!scanId) {
-      alert('Scan ID not available');
+      console.warn('Scan ID not available');
       return;
     }
     
     const scan = scanHistory.find(s => s.id === scanId);
     if (!scan || !scan.pdfReport) {
-      alert('PDF report not available for this scan.');
+      console.warn('PDF report not available for this scan.');
       return;
     }
     
@@ -138,23 +138,20 @@ const History = () => {
     console.log('🔄 Attempting direct download method...');
     if (downloadPDFDirect(scan.pdfReport, fileName)) {
       console.log('✅ Direct download initiated');
-      alert('PDF download started! Check your Downloads folder.');
       return;
     }
     
     // Method 2: Open in new tab as fallback (no fetch required)
-    console.log('� Fallback: Opening PDF in new tab...');
+    console.log('🔄 Fallback: Opening PDF in new tab...');
     try {
       const newTab = window.open(scan.pdfReport, '_blank');
       if (newTab) {
         console.log('✅ PDF opened in new tab');
-        alert('PDF opened in a new tab. You can download it manually from there.');
       } else {
-        alert('Popup blocked. Please allow popups and try again, or copy this URL to download manually: ' + scan.pdfReport);
+        console.warn('Popup blocked. URL:', scan.pdfReport);
       }
     } catch (error) {
       console.error('❌ All methods failed:', error);
-      alert('Unable to download PDF. Please contact support.');
     }
   };
 
@@ -171,7 +168,7 @@ const History = () => {
 
   const handleDeleteScan = async (scanId: string | undefined) => {
     if (!scanId) {
-      alert('Scan ID not available');
+      console.warn('Scan ID not available');
       return;
     }
     
@@ -190,7 +187,6 @@ const History = () => {
         }
       } catch (error) {
         console.error('Error deleting scan:', error);
-        alert('Error deleting scan. Please try again.');
       }
     }
   };
