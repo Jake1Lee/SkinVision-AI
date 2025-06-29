@@ -113,3 +113,5 @@ deploy-rules.bat
 # Coverage reports
 coverage/
 *.lcov
+check_port.py
+test_connection.py
