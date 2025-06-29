@@ -1,7 +1,96 @@
+# ========================
+# DEPLOYMENT EXCLUSIONS
+# ========================
+
+# Development and documentation files
 /analysis_prompt.txt
 /classes.txt
 /pferapport.txt
-/test.ipynb
-/backend/uploads
 /pferapport_complete.txt
-test-google-auth.js
+/report_prompt.txt
+/BACKEND_SETUP.md
+/BUILD_SUCCESS.md
+/CLEAN_SETUP.md
+/IMPLEMENTATION_SUMMARY.md
+/NEXTJS15_FIX.md
+/DEPLOYMENT_GUIDE.md
+/SETUP_COMPLETE.md
+
+# Test files and scripts
+/test.ipynb
+/test-google-auth.js
+/test_backend.py
+/test_endpoints.py
+/test_url_parsing.js
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Development batch files
+*.bat
+start-app.bat
+deploy-rules.bat
+
+# Log files
+*.log
+/pglite-debug.log
+/firebase-debug.log
+
+# Data files and spreadsheets
+*.xlsx
+*.csv
+/skin_lesion_predictions_*.xlsx
+
+# Temporary uploads and cache
+/backend/uploads/
+/backend/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Firebase rules backup files
+/firestore-rules.txt
+/firestore-permissive.rules
+/storage-rules.txt
+
+# Node modules and build artifacts
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tgz
+*.tar.gz
+
+# Environment and config files (keep templates)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
+
+# Package locks (optional - some prefer to keep them)
+package-lock.json
+yarn.lock
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Misc
+.cache/
+.temp/
+temp/
