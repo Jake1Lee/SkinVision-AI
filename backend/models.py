@@ -329,12 +329,12 @@ def predict_with_model(image_path, model_name):
                 'probability': round(float(probabilities[i]), 2)
             }
         
-        # Sort by probability (descending)
+        # Sort by probability (descending) and return all predictions
         sorted_predictions = dict(sorted(
             predictions.items(),
             key=lambda item: item[1]['probability'],
             reverse=True
-        ))
+        ))  # Return all 40 predictions
         
         # Get the top prediction
         top_prediction = next(iter(sorted_predictions))

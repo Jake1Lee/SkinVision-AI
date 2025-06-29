@@ -120,6 +120,14 @@ const Results = () => {
       x: {
         ticks: {
           color: '#fff',
+          maxRotation: 90,  // Rotate labels vertically
+          minRotation: 45,  // Minimum rotation
+          display: true,    // Force display of all labels
+          autoSkip: false,  // Don't auto-skip labels
+          maxTicksLimit: 50, // Allow up to 50 ticks (more than enough for 40 classes)
+          font: {
+            size: 10        // Smaller font to fit more labels
+          }
         },
         grid: {
           color: 'rgba(255, 255, 255, 0.1)',

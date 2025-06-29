@@ -110,10 +110,13 @@ def analyze_image():
         # Process the image and get predictions
         results = predict_with_model(filepath, model_name)
         logger.info(f"Prediction successful. Results: {results}")
-        return jsonify({
+        
+        response = jsonify({
             'success': True,
             'results': results
         })
+        logger.info("JSON response created, sending back to client...")
+        return response
     except Exception as e:
         logger.error(f"Error during prediction: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
@@ -134,6 +137,16 @@ def get_models():
     ]
     
     return jsonify(models)
+
+@app.route('/api/test', methods=['POST'])
+def test_endpoint():
+    """Simple test endpoint to verify JSON responses work"""
+    data = request.get_json()
+    return jsonify({
+        'success': True,
+        'message': 'Test endpoint working',
+        'received': data
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
