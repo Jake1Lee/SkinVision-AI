@@ -1,18 +1,6 @@
 # ========================
-# DEPLOYMENT EXCLUSIONS
+# GENERAL EXCLUSIONS
 # ========================
-
-# Log files
-*.log
-pglite-debug.log
-firebase-debug.log
-
-# Temporary uploads and cache
-backend/uploads/
-backend/__pycache__/
-__pycache__/
-*.pyc
-*.pyo
 
 # IDE and editor files
 .vscode/
@@ -23,6 +11,14 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# ========================
+# BUILD & DEPENDENCIES
+# ========================
+
 # Node modules and build artifacts
 node_modules/
 .next/
@@ -32,21 +28,85 @@ dist/
 *.tgz
 *.tar.gz
 
-# Environment and config files (keep templates)
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env
+# Python cache
+backend/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
 
 # TypeScript build info
 *.tsbuildinfo
 
-# Coverage reports
-coverage/
-*.lcov
+# ========================
+# LOGS & TEMP FILES
+# ========================
 
-# Misc
+# Log files
+*.log
+pglite-debug.log
+firebase-debug.log
+
+# Temporary uploads and cache
+backend/uploads/
 .cache/
 .temp/
 temp/
+
+# ========================
+# CONFIGURATION
+# ========================
+
+# Environment variables (keep templates, ignore local instances)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========================
+# DEVELOPMENT & TESTING
+# ========================
+
+# Documentation and reports (not essential for running the app)
+/analysis_prompt.txt
+/pferapport.txt
+/pferapport_complete.txt
+/report_prompt.txt
+/BACKEND_SETUP.md
+/BUILD_SUCCESS.md
+/CLEAN_SETUP.md
+/IMPLEMENTATION_SUMMARY.md
+/NEXTJS15_FIX.md
+/DEPLOYMENT_GUIDE.md
+/SETUP_COMPLETE.md
+/UI_IMPROVEMENTS_SUMMARY.md
+
+# Test files and scripts
+/test.ipynb
+/test-google-auth.js
+/test_backend.py
+/test_endpoints.py
+/test_url_parsing.js
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Development batch files
+*.bat
+start-app.bat
+deploy-rules.bat
+
+# Data files and spreadsheets (results of test runs)
+*.xlsx
+*.csv
+/skin_lesion_predictions_*.xlsx
+
+# Firebase rules backup files
+/firestore-rules.txt
+/firestore-permissive.rules
+/storage-rules.txt
+
+# Coverage reports
+coverage/
+*.lcov
