@@ -37,7 +37,12 @@ export default function Home() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:5000/api/upload', {
+      // Use relative URL for production, absolute for development
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? '/api/upload' 
+        : 'http://localhost:5000/api/upload';
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         body: formData,
       });

@@ -113,3 +113,6 @@ deploy-rules.bat
 # Coverage reports
 coverage/
 *.lcov
+backend/test_api.sh
+.gitignore
+backend/test_models.py

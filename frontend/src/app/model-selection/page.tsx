@@ -59,7 +59,12 @@ const ModelSelection = () => {
       
       // Try to fetch from backend but don't override if it fails
       try {
-        const response = await fetch('http://localhost:5000/api/models');
+        // Use relative URL for production, absolute for development
+        const apiUrl = process.env.NODE_ENV === 'production' 
+          ? '/api/models' 
+          : 'http://localhost:5000/api/models';
+        
+        const response = await fetch(apiUrl);
         if (response.ok) {
           const data: Model[] = await response.json();
           // Only use backend data if it has the correct models
@@ -108,11 +113,23 @@ const ModelSelection = () => {
         // Retrieve the filename from local storage
         const filename = localStorage.getItem('uploadedImageName') || 'skin_lesion.jpg'; // Default filename
 
-        // Send the selected model and image to the backend for analysis
-        const response = await axios.post('http://localhost:5000/api/analyze', {
+        // Use relative URL for production, absolute for development
+        const apiUrl = process.env.NODE_ENV === 'production' 
+          ? '/api/analyze' 
+          : 'http://localhost:5000/api/analyze';
+
+        console.log(`Sending analysis request to ${apiUrl}:`, {
           filename: filename,
           model: selectedModel,
         });
+
+        // Send the selected model and image to the backend for analysis
+        const response = await axios.post(apiUrl, {
+          filename: filename,
+          model: selectedModel,
+        });
+
+        console.log('Analysis response:', response.data);
 
         // Store the results in local storage
         localStorage.setItem('analysisResults', JSON.stringify(response.data.results));

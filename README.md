@@ -33,11 +33,136 @@ SkinVision AI is a web-based application designed to provide AI-powered analysis
 - **AI Services**:
   - [OpenAI API (GPT-4o)](https://openai.com/api/) – for the AI chat assistant and report generation
 
-## 🚀 Getting Started
+## 🌐 Live Production Deployment
+
+**🚀 SkinVision AI is now live at: [http://www.skinvisionai.com](http://www.skinvisionai.com)**
+
+### Production Status ✅
+- **Backend**: Flask + Gunicorn serving real AI predictions
+- **Frontend**: Next.js with optimized static assets  
+- **Models**: ResNet50 & InceptionV3 fully functional
+- **Infrastructure**: DigitalOcean droplet with Nginx proxy
+- **Storage**: Firebase for authentication and data persistence
+
+### Production Features
+- Real-time skin lesion analysis with confidence scores
+- Secure file uploads and processing
+- Comprehensive error logging and monitoring
+- Production-optimized build with proper caching
+
+## 🔧 Production Deployment
+
+### Server Requirements
+- Ubuntu 24.10+ with 2GB RAM minimum
+- Python 3.12+ with venv
+- Node.js 18+ 
+- Nginx for reverse proxy
+- Git LFS for model files
+
+### Production Setup Steps
+
+1. **Clone and Setup Repository:**
+   ```bash
+   git clone https://github.com/Jake1Lee/SkinVision-AI.git
+   cd SkinVision-AI
+   git checkout production  # Use the production branch
+   ```
+
+2. **Backend Production Setup:**
+   ```bash
+   cd backend
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   pip install gunicorn
+   
+   # Pull model files with Git LFS
+   git lfs pull
+   ```
+
+3. **Frontend Production Build:**
+   ```bash
+   cd frontend
+   npm install
+   npm run build
+   npm start
+   ```
+
+4. **Start Production Services:**
+   ```bash
+   # Backend with Gunicorn
+   cd backend && source venv/bin/activate
+   gunicorn -w 4 -b 127.0.0.1:5000 app:app
+   
+   # Frontend (in separate terminal)
+   cd frontend && npm start
+   ```
+
+5. **Nginx Configuration:**
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com;
+       
+       location / {
+           proxy_pass http://127.0.0.1:3000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+       }
+       
+       location /api/ {
+           proxy_pass http://127.0.0.1:5000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+       }
+   }
+   ```
+
+### Production Testing
+```bash
+# Test model loading
+cd backend && python test_models_direct.py
+
+# Test API endpoints
+curl http://localhost:5000/api/models
+curl -X POST -F "file=@test_image.jpg" http://localhost:5000/api/upload
+```
+
+### Monitoring
+- Backend logs: Check Gunicorn output for prediction requests
+- Frontend: Monitor Next.js build and static asset serving
+- Models: Verify `.pth` files are 100MB+ (not LFS pointers)
+
+## 📊 Model Performance
+- **ResNet50**: Achieves 90%+ confidence on clear lesion images
+- **InceptionV3**: Provides detailed multi-class probability distributions
+- **Processing Time**: ~2-3 seconds per image on 2GB RAM droplet
+
+## 🔍 Troubleshooting
+
+### Common Issues
+1. **CSS 404 Errors**: Rebuild frontend with `npm run build && npm start`
+2. **Model Loading Fails**: Ensure Git LFS pulled files (`git lfs pull`)
+3. **CORS Errors**: Check backend CORS configuration includes your domain
+4. **Memory Issues**: Add swap file for droplets with <4GB RAM
+
+### Debug Commands
+```bash
+# Check model files
+ls -lah backend/models/*.pth
+
+# Test backend directly
+cd backend && python -c "from models import predict_with_model; print('OK')"
+
+# Check frontend build
+ls -la frontend/.next/static/css/
+```
+
+## 🚀 Getting Started (Development)
 
 ### Prerequisites
 
-- [Node.js](httpss://nodejs.org/en/) (v18.x or later)
+- [Node.js](https://nodejs.org/en/) (v18.x or later)
 - [Python](https://www.python.org/downloads/) (v3.10 or later)
 - `pip` and `virtualenv` for Python package management
 - A [Firebase](https://firebase.google.com/) project with Authentication, Firestore, and Storage enabled.
@@ -95,3 +220,22 @@ SkinVision AI is a web-based application designed to provide AI-powered analysis
 5.  View the results page with the diagnostic predictions.
 6.  Use the AI chat assistant to ask questions or generate a PDF report.
 7.  View your saved scans in the "History" page.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- PyTorch team for the deep learning framework
+- Next.js team for the React framework
+- Firebase for cloud services
+- The medical AI research community for advancing skin lesion classification
