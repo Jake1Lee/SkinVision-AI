@@ -1,0 +1,1056 @@
+# RAPPORT DE PROJET DE FIN D'ÉTUDES (PFE) - VERSION COMPLÈTE
+## SkinVision AI - Application Complète de Classification des Lésions Cutanées avec Cloud Storage et Authentication
+
+### INFORMATIONS GÉNÉRALES
+- **Titre du projet :** SkinVision AI - Système complet de classification automatique des lésions cutanées avec stockage cloud et authentification
+- **Type de projet :** Projet de Fin d'Études (PFE)
+- **Domaine :** Intelligence Artificielle, Vision par Ordinateur, Applications Médicales, Cloud Computing
+- **Technologies principales :** Deep Learning, Next.js, Flask, PyTorch, Firebase, Authentication
+- **Langages :** Python (backend), TypeScript/JavaScript (frontend)
+- **Architecture :** Full-Stack avec microservices et stockage cloud distribué
+
+---
+
+## 1. PRÉSENTATION DU PROJET
+
+### 1.1 Objectifs étendus
+SkinVision AI est une application web complète et sécurisée dédiée à l'analyse et la classification automatique des lésions cutanées pigmentées. Le projet vise à démocratiser l'accès à une analyse préliminaire des lésions cutanées grâce à la technologie d'intelligence artificielle, en intégrant un système complet de gestion des utilisateurs, stockage cloud, et génération de rapports médicaux persistants.
+
+### 1.2 Problématique étendue
+- Besoin d'outils d'aide au diagnostic en dermatologie avec traçabilité
+- Complexité de la classification des lésions cutanées (40+ types différents)
+- Nécessité d'une interface accessible pour les professionnels de santé
+- Comparaison de performances entre différents modèles d'IA
+- **Stockage sécurisé** des analyses et rapports médicaux
+- **Authentification** et gestion des utilisateurs
+- **Historique** des analyses pour suivi longitudinal
+- **Génération** et stockage de rapports PDF médicaux
+
+### 1.3 Solution proposée complète
+Une application web intelligente et sécurisée intégrant :
+- Classification automatique par IA de lésions cutanées
+- Interface utilisateur moderne et intuitive
+- Système de comparaison de modèles
+- Génération de rapports médicaux automatisés
+- Chat IA interactif pour l'assistance
+- **Authentification Firebase** avec Google OAuth
+- **Stockage cloud Firebase** pour images et rapports
+- **Base de données Firestore** pour historique des analyses
+- **Téléchargement** et gestion des rapports PDF
+- **Interface de gestion** d'historique des scans
+
+---
+
+## 2. ARCHITECTURE TECHNIQUE COMPLÈTE
+
+### 2.1 Architecture générale cloud-native
+L'application suit une architecture full-stack moderne avec séparation frontend/backend et intégration cloud :
+
+```
+SkinVision-AI/
+├── frontend/              # Application Next.js avec authentification
+│   ├── src/
+│   │   ├── app/          # Pages Next.js 15 App Router
+│   │   │   ├── about/    # Page d'information
+│   │   │   ├── benchmarking/  # Comparaison de modèles
+│   │   │   ├── history/  # Historique des analyses
+│   │   │   ├── model-selection/  # Sélection de modèle IA
+│   │   │   ├── results/  # Résultats d'analyse avec chat IA
+│   │   │   └── scan-details/  # Détails d'un scan spécifique
+│   │   ├── components/   # Composants React réutilisables
+│   │   │   ├── AuthForm.tsx       # Formulaire d'authentification complet (Email/Password + Google OAuth)
+│   │   │   ├── GoogleProfileCompletion.tsx  # Complément profil Google
+│   │   │   ├── Navbar.tsx         # Navigation avec état auth
+│   │   │   ├── PatientInfoForm.tsx  # Formulaire patient
+│   │   │   └── GlassCard.tsx      # Container glassmorphism
+│   │   ├── contexts/     # Contextes React
+│   │   │   └── AuthContext.tsx    # Gestion état authentification
+│   │   ├── lib/          # Utilitaires et configuration
+│   │   │   └── firebase.ts        # Configuration Firebase
+│   │   ├── services/     # Services métier
+│   │   │   └── scanHistoryService.ts  # Service gestion scans
+│   │   └── types/        # Types TypeScript
+│   │       └── index.ts  # Définitions types ScanRecord, etc.
+├── backend/               # API Flask Python
+│   ├── app.py            # Serveur Flask principal
+│   ├── models.py         # Modèles PyTorch et prédictions
+│   ├── requirements.txt  # Dépendances Python
+│   ├── models/           # Modèles IA entraînés
+│   │   ├── inceptionv3_model.pth
+│   │   └── resnet50_model.pth
+│   ├── results/          # Métriques et visualisations
+│   │   ├── inceptionv3_confusion_matrix.png
+│   │   ├── inceptionv3_training_metrics.png
+│   │   ├── resnet50_confusion_matrix.png
+│   │   └── resnet50_training_metrics.png
+│   └── uploads/          # Images temporaires
+├── functions/            # Firebase Cloud Functions (optionnel)
+├── dataconnect/          # Firebase Data Connect (optionnel)
+└── configuration/        # Fichiers de configuration
+    ├── firestore.rules   # Règles de sécurité Firestore
+    ├── storage.rules     # Règles de sécurité Storage
+    └── firebase.json     # Configuration Firebase
+```
+
+### 2.2 Stack technologique complète
+
+#### Backend (Python)
+- **Framework :** Flask 2.3+ avec CORS configuré
+- **IA/ML :** PyTorch 1.13+, Torchvision 0.14+
+- **Traitement d'images :** PIL (Python Imaging Library)
+- **Modèles :** ResNet50, InceptionV3 personnalisés pour 40+ classes
+- **API :** RESTful avec endpoints JSON et gestion d'erreurs
+- **Sécurité :** Validation CORS pour frontend Next.js
+
+#### Frontend (TypeScript/JavaScript)
+- **Framework :** Next.js 15.3.1 avec App Router et React 19
+- **Authentification :** Firebase Authentication avec Google OAuth
+- **Base de données :** Firebase Firestore pour persistence
+- **Stockage :** Firebase Storage pour images et PDFs
+- **UI :** React 19, TailwindCSS 4.0, CSS Modules
+- **Visualisation :** Chart.js 4.4.9, React-chartjs-2
+- **Styling :** Design glassmorphism avec backdrop-filter
+- **Fonctionnalités avancées :** 
+  - Génération PDF (jsPDF 3.0+)
+  - Capture d'écran (html2canvas)
+  - Intégration API ChatGPT (GPT-4o Vision + GPT-3.5-turbo)
+  - Animations (Framer Motion 12.7+)
+  - Gestion d'état avec React Context
+  - Routage client-side avec Next.js Router
+
+#### Services Cloud (Firebase)
+- **Authentication :** Google OAuth, gestion des sessions
+- **Firestore :** Base de données NoSQL pour historique
+- **Storage :** Stockage d'images et rapports PDF
+- **Security Rules :** Règles de sécurité granulaires
+- **Real-time :** Synchronisation temps réel (optionnel)
+
+### 2.3 Modèles d'Intelligence Artificielle
+
+#### 2.3.1 ResNet50 optimisé
+- **Architecture :** Réseau résiduel de 50 couches avec fine-tuning
+- **Spécialisation :** Classification générale des lésions cutanées
+- **Performance :** 50.2% d'accuracy, 63.4% de précision
+- **Optimisations personnalisées :** 
+  - Couches FC adaptées : 2048 → 512 → 256 → 40 classes
+  - Dropout multicouche (0.5, 0.3) pour régularisation
+  - Activation ReLU et normalisation batch
+  - Optimiseur Adam avec learning rate adaptatif
+
+#### 2.3.2 InceptionV3 adapté
+- **Architecture :** Architecture Inception de Google modifiée
+- **Spécialisation :** Détection de motifs subtils dans lésions complexes
+- **Performance :** Optimisé pour conditions dermatologiques rares
+- **Avantages :** Extraction efficace de caractéristiques multi-échelles
+
+#### 2.3.3 Système de classification étendu
+Le système peut identifier **40+ types** de lésions cutanées avec métadonnées :
+- **Mélanocytaires :** mélanomes, nævus, lentigines avec sous-types
+- **Non-mélanocytaires :** carcinomes, kératoses, angiomes
+- **Classifications :** bénin/malin/indéterminé avec scores de confiance
+- **Localisations :** acral, dermique, jonctionnel, composé
+- **Codes ICD-10 :** Intégration des codes médicaux standardisés
+
+---
+
+## 3. FONCTIONNALITÉS PRINCIPALES ÉTENDUES
+
+### 3.1 Système d'authentification et profils
+
+#### 3.1.1 Authentification Firebase complète
+- **Email/Password :** Authentification traditionnelle avec validation
+- **Google OAuth :** Connexion simplifiée avec compte Google via popup
+- **Interface unifiée :** Boutons "Sign in with Google" intégrés au formulaire
+- **Gestion des sessions :** Persistance automatique de l'état
+- **Profils utilisateurs :** Informations de base avec photo automatique
+- **Sécurité :** Tokens JWT automatiquement gérés
+- **Error handling :** Gestion d'erreurs robuste pour tous les types d'auth
+
+#### 3.1.2 Gestion des profils
+- **Profil Google :** Récupération automatique des informations
+- **Complément d'informations :** Formulaire de données médicales
+- **Persistance :** Stockage sécurisé dans Firestore
+- **Navigation conditionnelle :** Accès basé sur l'état d'authentification
+
+### 3.2 Interface utilisateur avec états d'authentification
+
+#### 3.2.1 Navigation contextuelle
+- **Navbar adaptative** avec état de connexion
+- **Menu utilisateur** avec photo de profil
+- **Déconnexion :** Gestion propre des sessions
+- **Redirection automatique :** Selon l'état d'auth
+
+#### 3.2.2 Pages protégées
+- **History :** Accessible uniquement aux utilisateurs connectés
+- **Results :** Sauvegarde conditionnelle basée sur l'auth
+- **Scan Details :** Affichage des détails personnalisés
+
+### 3.3 Gestion complète des analyses
+
+#### 3.3.1 Traitement et stockage des images
+- **Upload sécurisé :** Validation côté client et serveur
+- **Stockage Firebase :** Images dans Firebase Storage
+- **Métadonnées :** Informations patient et contexte médical
+- **Optimisation :** Compression et redimensionnement automatique
+
+#### 3.3.2 Persistance des analyses
+- **Structure de données :**
+  ```typescript
+  interface ScanRecord {
+    id: string;
+    userId: string;
+    timestamp: FirebaseTimestamp;
+    imageUrl: string;
+    imageName: string;
+    patientData: PatientData;
+    selectedModel: string;
+    analysisResults: AnalysisResults;
+    pdfReport?: string;
+    pdfFileName?: string;
+  }
+  ```
+- **Firestore :** Stockage NoSQL avec requêtes optimisées
+- **Indexation :** Par utilisateur et timestamp pour performance
+
+### 3.4 Système de rapports PDF avancé
+
+#### 3.4.1 Génération automatisée
+- **Template médical :** Format professionnel standardisé
+- **Intégration IA :** Analyse automatique par GPT-4o Vision
+- **Sections structurées :**
+  - Résumé diagnostique synthétique
+  - Lettre d'orientation au dermatologue
+  - Compte-rendu clinique détaillé
+- **Métadonnées :** Timestamp, modèle utilisé, scores de confiance
+
+#### 3.4.2 Stockage et téléchargement
+- **Upload Firebase :** Stockage automatique dans Storage
+- **Liens persistants :** URLs de téléchargement sécurisées
+- **Gestion d'erreurs :** Fallback multi-niveau pour téléchargement
+- **Formats :** PDF avec encodage UTF-8 optimisé
+
+### 3.5 Historique et gestion des scans
+
+#### 3.5.1 Interface d'historique
+- **Liste paginée :** Affichage chronologique des analyses
+- **Filtres :** Par modèle, date, type de prédiction
+- **Actions :** Visualiser, télécharger PDF, supprimer
+- **Miniatures :** Aperçu des images analysées
+
+#### 3.5.2 Détails des analyses
+- **Page dédiée :** Affichage complet d'une analyse
+- **Réanalyse :** Possibilité de changer de modèle
+- **Historique :** Suivi des modifications
+- **Export :** Données en format JSON
+
+---
+
+## 4. ARCHITECTURE DE DONNÉES
+
+### 4.1 Modèle de données Firestore
+
+#### 4.1.1 Collection `scanHistory`
+```typescript
+// Structure principale des documents
+{
+  id: string;                    // ID auto-généré Firestore
+  userId: string;                // UID Firebase Auth
+  timestamp: Timestamp;          // Timestamp serveur Firebase
+  imageUrl: string;              // URL Firebase Storage
+  imageName: string;             // Nom original du fichier
+  patientData: {                 // Informations patient
+    age?: number;
+    gender?: string;
+    medicalHistory?: string;
+    lesionLocation?: string;
+  };
+  selectedModel: string;         // 'resnet50' | 'inceptionv3'
+  analysisResults: {             // Résultats de l'IA
+    predictions: Record<string, {
+      name: string;
+      probability: number;
+    }>;
+    topPrediction: {
+      code: string;
+      name: string;
+      probability: number;
+    };
+  };
+  pdfReport?: string;            // URL du rapport PDF
+  pdfFileName?: string;          // Nom du fichier PDF
+}
+```
+
+#### 4.1.2 Règles de sécurité Firestore
+```javascript
+// Règles granulaires par utilisateur
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /scanHistory/{document} {
+      allow read, write: if request.auth != null 
+        && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null 
+        && request.auth.uid == request.resource.data.userId;
+    }
+  }
+}
+```
+
+### 4.2 Stockage Firebase Storage
+
+#### 4.2.1 Structure de stockage
+```
+gs://projet-bucket.appspot.com/
+├── scan-images/
+│   └── {userId}/
+│       └── {timestamp}_{filename}
+└── pdf-reports/
+    └── {scanId}/
+        └── {pdfFileName}
+```
+
+#### 4.2.2 Règles de sécurité Storage
+```javascript
+// Accès basé sur l'authentification
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /scan-images/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null 
+        && request.auth.uid == userId;
+    }
+    match /pdf-reports/{scanId}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+---
+
+## 5. SERVICES ET ARCHITECTURE LOGICIELLE
+
+### 5.1 Service de gestion des scans
+
+#### 5.1.1 ScanHistoryService
+```typescript
+class ScanHistoryService {
+  // Gestion de la connexion et authentification
+  async testConnection(userId: string): Promise<boolean>
+  async debugAuth(): Promise<void>
+  
+  // CRUD operations
+  async saveScan(userId, imageBlob, imageName, patientData, 
+                 selectedModel, analysisResults): Promise<string>
+  async getUserScans(userId: string): Promise<ScanRecord[]>
+  async updateScanWithPDF(scanId, pdfBlob, pdfFileName): Promise<void>
+  async deleteScan(scanId, imageUrl, pdfReport?): Promise<void>
+  
+  // Utilitaires
+  validateImageData(imageData: string): ValidationResult
+  imageToBlob(imageData: string): Promise<Blob>
+}
+```
+
+#### 5.1.2 Gestion d'erreurs robuste
+- **Validation des données :** Contrôles multi-niveaux
+- **Retry logic :** Tentatives automatiques en cas d'échec
+- **Fallback modes :** Modes dégradés pour continuité
+- **Logging détaillé :** Debugging et monitoring
+
+### 5.2 Service d'authentification
+
+#### 5.2.1 AuthContext React
+```typescript
+interface AuthContextType {
+  currentUser: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => Promise<void>;
+  loading: boolean;
+}
+```
+
+#### 5.2.2 Gestion des états
+- **States globaux :** Context Provider pour toute l'app
+- **Persistance :** Automatic Firebase session management
+- **Navigation guards :** Redirection basée sur l'auth
+- **Error handling :** Gestion des erreurs d'authentification
+
+---
+
+## 6. INTÉGRATION IA ET CHAT INTELLIGENT
+
+### 6.1 Chat IA médical avancé
+
+#### 6.1.1 Architecture multi-modèle
+- **GPT-4o Vision :** Analyse d'images médicales avec prompts spécialisés
+- **GPT-3.5-turbo :** Conversations textuelles contextuelles
+- **Prompts médicaux :** Templates spécialisés pour dermatologie
+- **Context awareness :** Intégration des résultats d'analyse
+
+#### 6.1.2 Fonctionnalités avancées
+- **Analyse automatique :** Déclenchée automatiquement à l'ouverture
+- **Rapport médical :** Génération de rapports structurés
+- **Conversation contextuelle :** Basée sur les résultats d'IA
+- **Multi-format :** Support texte et image simultané
+
+### 6.2 Prompts médicaux spécialisés
+
+#### 6.2.1 Template d'analyse
+```typescript
+const getAnalysisPrompt = (): string => {
+  return `VOUS ÊTES LE DR. MARIE DUBOIS, dermatologue certifiée...
+  
+  **RÉSULTATS DE L'ANALYSE IA ÉTABLIE:**
+  - **Diagnostic Principal:** ${topPrediction?.name}
+  - **Code de Classification:** ${topPrediction?.code}
+  - **Confiance Diagnostique:** ${topPrediction.probability}%
+  - **Système IA:** ${selectedModel}
+  
+  **ANALYSE DIFFÉRENTIELLE:**
+  ${Object.entries(analysisResults).map(...)}
+  
+  **TÂCHE CLINIQUE:**
+  Fournissez votre interprétation clinique experte...`;
+};
+```
+
+#### 6.2.2 Génération de rapports
+- **Structure médicale :** Format standardisé professionnel
+- **Intégration données :** Résultats IA + analyse contextuelle
+- **Multi-sections :** Diagnostic, orientation, recommandations
+- **Export PDF :** Génération automatique avec métadonnées
+
+---
+
+## 7. VISUALISATION ET INTERFACE UTILISATEUR
+
+### 7.1 Composants React spécialisés
+
+#### 7.1.1 Chart.js avec Error Boundaries
+```typescript
+// Composant avec gestion d'erreurs robuste
+const ChartErrorBoundary: React.FC = ({ children }) => {
+  // Gestion des erreurs Chart.js
+  // Fallback UI en cas d'échec
+  // Logging détaillé pour debugging
+}
+
+// Traitement sécurisé des données
+const getChartData = () => {
+  if (!analysisResults) return { labels: [], data: [] };
+  
+  try {
+    const entries = Object.entries(analysisResults);
+    const labels: string[] = [];
+    const data: number[] = [];
+    
+    entries.forEach(([key, value]) => {
+      if (value && typeof value === 'object' && 'probability' in value) {
+        labels.push(key);
+        data.push(value.probability || 0);
+      }
+    });
+    
+    return { labels: labels.sort(), data };
+  } catch (error) {
+    console.error('Error processing chart data:', error);
+    return { labels: [], data: [] };
+  }
+};
+```
+
+#### 7.1.3 AuthForm avec Google OAuth intégré
+```typescript
+// Composant d'authentification multi-modal
+const AuthForm: React.FC<AuthFormProps> = ({ onClose }) => {
+  const { login, signup, loginWithGoogle } = useAuth();
+  
+  // Gestion des méthodes d'authentification
+  const handleGoogleSignIn = async () => {
+    try {
+      await loginWithGoogle();
+      onClose();
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+  
+  // Interface unifiée avec:
+  // - Formulaire email/password traditionnel
+  // - Bouton Google OAuth avec icône officielle
+  // - Divider "Or" pour séparation visuelle
+  // - Gestion d'erreurs commune
+  // - États de chargement synchronisés
+};
+```
+
+#### 7.1.2 Loading states et UX
+- **States de chargement :** Indicateurs visuels pour toutes les opérations async
+- **Error boundaries :** Gestion gracieuse des erreurs React
+- **Skeleton loading :** Placeholders pendant les chargements
+- **Toast notifications :** Feedback utilisateur temps réel
+
+### 7.2 Design system glassmorphism
+
+#### 7.2.1 GlassCard component
+```typescript
+// Composant conteneur réutilisable
+const GlassCard: React.FC<GlassCardProps> = ({ 
+  children, 
+  backButton, 
+  className 
+}) => {
+  return (
+    <div className={`glass-card ${className}`}>
+      {backButton && <div className="back-button-container">{backButton}</div>}
+      <div className="glass-content">
+        {children}
+      </div>
+    </div>
+  );
+};
+```
+
+#### 7.2.2 Styling avancé
+- **CSS Modules :** Isolation des styles par composant
+- **TailwindCSS :** Utilitaires pour layouts responsives
+- **Backdrop filters :** Effets glassmorphism natifs
+- **Custom properties :** Variables CSS pour cohérence
+
+---
+
+## 8. GESTION DES ERREURS ET ROBUSTESSE
+
+### 8.1 Stratégies de fallback
+
+#### 8.1.1 Téléchargement PDF multi-niveau
+```typescript
+const handleDownloadPDF = async (scanId: string) => {
+  // Méthode 1: Direct link download (pas de fetch)
+  if (downloadPDFDirect(pdfUrl, fileName)) return;
+  
+  // Méthode 2: Firebase SDK avec parsing URL
+  try {
+    const blob = await getBlob(fileRef);
+    // Création du download link
+  } catch (firebaseError) {
+    
+    // Méthode 3: Ouverture dans nouvel onglet
+    window.open(pdfUrl, '_blank');
+  }
+};
+```
+
+#### 8.1.2 Validation et conversion d'images
+```typescript
+// Validation multi-étapes des données image
+validateImageData(imageData: string): ValidationResult {
+  if (!imageData) return { isValid: false, error: 'No image data' };
+  if (!imageData.startsWith('data:image/')) 
+    return { isValid: false, error: 'Invalid format' };
+  // Validation taille, format, etc.
+}
+
+// Conversion robuste avec fallbacks
+async imageToBlob(imageData: string): Promise<Blob> {
+  try {
+    // Méthode 1: Conversion directe base64
+    return await fetch(imageData).then(r => r.blob());
+  } catch (error) {
+    // Méthode 2: Canvas conversion
+    // Méthode 3: Manual parsing
+  }
+}
+```
+
+### 8.2 Monitoring et debugging
+
+#### 8.2.1 Logging structuré
+- **Console grouping :** Logs organisés par fonctionnalité
+- **Error tracking :** Capture et reporting des erreurs
+- **Performance monitoring :** Métriques de temps de réponse
+- **User activity :** Suivi des interactions utilisateur
+
+#### 8.2.2 Debug helpers
+```typescript
+// Fonction de debug pour Firebase Auth
+async debugAuth(): Promise<void> {
+  const auth = getAuth();
+  console.group('🔍 Firebase Auth Debug');
+  console.log('Current user:', auth.currentUser);
+  console.log('Auth state ready:', auth.authStateReady);
+  // ... plus de détails
+  console.groupEnd();
+}
+```
+
+---
+
+## 9. PERFORMANCE ET OPTIMISATION
+
+### 9.1 Optimisations frontend
+
+#### 9.1.1 Next.js optimizations
+- **App Router :** Nouveau système de routage performant
+- **Static generation :** Pages pré-générées quand possible
+- **Image optimization :** Composant Image Next.js optimisé
+- **Code splitting :** Chargement dynamique des composants lourds
+
+#### 9.1.2 React optimizations
+- **Memo :** Prévention des re-renders inutiles
+- **useCallback/useMemo :** Optimisation des fonctions et valeurs
+- **Lazy loading :** Chargement différé des composants non critiques
+- **Context optimization :** Contexts granulaires pour éviter re-renders
+
+### 9.2 Optimisations backend
+
+#### 9.2.1 Flask optimizations
+- **Model caching :** Mise en cache des modèles PyTorch
+- **Request validation :** Validation rapide des inputs
+- **CORS optimization :** Configuration précise pour performance
+- **Error handling :** Réponses rapides en cas d'erreur
+
+#### 9.2.2 Firebase optimizations
+- **Query optimization :** Index Firestore pour requêtes rapides
+- **Storage rules :** Minimisation des vérifications de sécurité
+- **Batch operations :** Opérations groupées quand possible
+- **CDN leverage :** Utilisation du CDN Firebase pour assets statiques
+
+---
+
+## 10. SÉCURITÉ ET CONFORMITÉ
+
+### 10.1 Sécurité des données
+
+#### 10.1.1 Chiffrement et protection
+- **HTTPS partout :** Communication chiffrée obligatoire
+- **Firebase Security Rules :** Contrôle d'accès granulaire
+- **Token validation :** Vérification automatique des JWT
+- **Data sanitization :** Nettoyage des inputs utilisateur
+
+#### 10.1.2 Gestion des sessions
+- **Session timeout :** Expiration automatique des sessions
+- **Secure cookies :** Configuration sécurisée
+- **CSRF protection :** Protection contre attaques cross-site
+- **Input validation :** Validation côté client et serveur
+
+### 10.2 Conformité médicale
+
+#### 10.2.1 Disclaimers et avertissements
+- **Usage éducatif :** Clarification sur l'utilisation
+- **Non-substitution :** Avertissement consultation médicale
+- **Limitations IA :** Transparence sur les limites
+- **Responsabilité :** Clarification des responsabilités
+
+#### 10.2.2 Audit et traçabilité
+- **Logs d'accès :** Traçabilité des consultations
+- **Historique modifications :** Suivi des changements
+- **Backup automatique :** Sauvegarde des données critiques
+- **Export compliance :** Capacité d'export pour audits
+
+---
+
+## 11. DIAGRAMMES UML ET ARCHITECTURE
+
+### 11.1 Diagramme de classes principales
+
+```mermaid
+classDiagram
+    class AuthContext {
+        +currentUser: User
+        +loading: boolean
+        +login(email, password): Promise~void~
+        +loginWithGoogle(): Promise~void~
+        +logout(): Promise~void~
+    }
+    
+    class ScanHistoryService {
+        +collectionName: string
+        +saveScan(userId, imageBlob, imageName, patientData, selectedModel, analysisResults): Promise~string~
+        +getUserScans(userId): Promise~ScanRecord[]~
+        +updateScanWithPDF(scanId, pdfBlob, pdfFileName): Promise~void~
+        +deleteScan(scanId, imageUrl, pdfReport): Promise~void~
+        +testConnection(userId): Promise~boolean~
+        +validateImageData(imageData): ValidationResult
+        +imageToBlob(imageData): Promise~Blob~
+    }
+    
+    class ScanRecord {
+        +id: string
+        +userId: string
+        +timestamp: FirebaseTimestamp
+        +imageUrl: string
+        +imageName: string
+        +patientData: PatientData
+        +selectedModel: string
+        +analysisResults: AnalysisResults
+        +pdfReport?: string
+        +pdfFileName?: string
+    }
+    
+    class PatientData {
+        +age?: number
+        +gender?: string
+        +medicalHistory?: string
+        +lesionLocation?: string
+    }
+    
+    class AnalysisResults {
+        +predictions: Record~string, PredictionResult~
+        +topPrediction: TopPrediction
+    }
+    
+    class PredictionResult {
+        +name: string
+        +probability: number
+    }
+    
+    class TopPrediction {
+        +code: string
+        +name: string
+        +probability: number
+    }
+    
+    AuthContext ||--o{ ScanRecord : manages
+    ScanHistoryService ||--o{ ScanRecord : creates/manages
+    ScanRecord ||--|| PatientData : contains
+    ScanRecord ||--|| AnalysisResults : contains
+    AnalysisResults ||--o{ PredictionResult : contains
+    AnalysisResults ||--|| TopPrediction : contains
+```
+
+### 11.2 Diagramme de séquence - Analyse complète
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant A as AuthContext
+    participant B as Backend
+    participant FB as Firebase
+    participant AI as ChatGPT
+    
+    U->>F: Upload image
+    F->>F: Validate image format
+    F->>F: Store in localStorage
+    
+    U->>F: Select AI model
+    F->>B: POST /api/analyze
+    B->>B: Load PyTorch model
+    B->>B: Process image
+    B->>B: Generate predictions
+    B-->>F: Return analysis results
+    
+    F->>F: Display results + chart
+    U->>F: Open chat
+    F->>AI: Send image + analysis prompt
+    AI-->>F: Return medical analysis
+    
+    U->>F: Generate PDF report
+    F->>AI: Send enhanced medical prompt
+    AI-->>F: Return structured report
+    F->>F: Generate PDF with jsPDF
+    
+    alt User authenticated
+        F->>A: Check auth state
+        A-->>F: User authenticated
+        F->>FB: Upload image to Storage
+        FB-->>F: Return image URL
+        F->>FB: Save scan to Firestore
+        FB-->>F: Return scan ID
+        F->>FB: Upload PDF to Storage
+        FB-->>F: Return PDF URL
+        F->>FB: Update scan with PDF URL
+    else User not authenticated
+        F->>F: Local download only
+    end
+    
+    U->>F: View history
+    F->>A: Check auth state
+    A-->>F: User authenticated
+    F->>FB: Query user scans
+    FB-->>F: Return scan list
+    F->>F: Display scan history
+    
+    U->>F: Download PDF
+    F->>FB: Get PDF blob
+    FB-->>F: Return blob data
+    F->>F: Create download link
+```
+
+### 11.3 Diagramme d'architecture système
+
+```mermaid
+graph TB
+    subgraph "Client Browser"
+        UI[Next.js UI]
+        Auth[Auth Context]
+        Chart[Chart.js]
+        PDF[jsPDF]
+    end
+    
+    subgraph "Firebase Services"
+        FAuth[Firebase Auth]
+        FS[Firestore DB]
+        FStor[Firebase Storage]
+    end
+    
+    subgraph "Backend Services"
+        Flask[Flask API]
+        Models[PyTorch Models]
+        CORS[CORS Handler]
+    end
+    
+    subgraph "External APIs"
+        GPT4[GPT-4o Vision]
+        GPT35[GPT-3.5-turbo]
+    end
+    
+    subgraph "AI Models"
+        ResNet[ResNet50]
+        Inception[InceptionV3]
+    end
+    
+    UI --> Auth
+    UI --> Chart
+    UI --> PDF
+    Auth --> FAuth
+    UI --> FS
+    UI --> FStor
+    
+    UI --> Flask
+    Flask --> CORS
+    Flask --> Models
+    Models --> ResNet
+    Models --> Inception
+    
+    UI --> GPT4
+    UI --> GPT35
+    
+    FS --> |Store scans| FStor
+    FStor --> |Store images/PDFs| UI
+    FAuth --> |Manage sessions| Auth
+```
+
+### 11.4 Diagramme de flux utilisateur
+
+```mermaid
+flowchart TD
+    Start([User arrives])
+    
+    Start --> Auth{Authenticated?}
+    Auth -->|No| Login[Login Page]
+    Auth -->|Yes| Home[Home Page]
+    Login --> Google[Google OAuth]
+    Google --> Profile[Complete Profile]
+    Profile --> Home
+    
+    Home --> Upload[Upload Image]
+    Upload --> Validate{Valid Image?}
+    Validate -->|No| Error[Show Error]
+    Validate -->|Yes| ModelSelect[Select AI Model]
+    
+    ModelSelect --> Analysis[AI Analysis]
+    Analysis --> Results[Display Results]
+    
+    Results --> Chat[Open Chat]
+    Chat --> AutoAnalysis[Auto Medical Analysis]
+    AutoAnalysis --> PDF[Generate PDF Report]
+    
+    Results --> Save{Save to History?}
+    Save -->|Yes| AuthCheck{Authenticated?}
+    AuthCheck -->|No| LoginPrompt[Prompt Login]
+    AuthCheck -->|Yes| SaveToDB[Save to Firebase]
+    SaveToDB --> History[View History]
+    
+    History --> Download[Download PDF]
+    History --> ViewDetails[View Scan Details]
+    History --> Delete[Delete Scan]
+    
+    Error --> Upload
+    LoginPrompt --> Login
+```
+
+---
+
+## 12. TESTS ET VALIDATION
+
+### 12.1 Tests de robustesse
+
+#### 12.1.1 Gestion d'erreurs
+- **Network failures :** Tests de déconnexion réseau
+- **Firebase timeouts :** Gestion des timeouts de service
+- **Invalid data :** Validation avec données corrompues
+- **Authentication errors :** Tests d'expiration de session
+
+#### 12.1.2 Tests de performance
+- **Large images :** Upload d'images de grande taille
+- **Concurrent users :** Tests de charge utilisateur
+- **Storage limits :** Tests des limites Firebase
+- **Memory management :** Gestion mémoire côté client
+
+### 12.2 Tests d'intégration
+
+#### 12.2.1 End-to-end workflows
+- **Complete analysis cycle :** Upload → Analysis → Save → Retrieve
+- **PDF generation :** Complete report generation workflow
+- **Authentication flows :** Login → Use app → Logout
+- **Error recovery :** Recovery from various failure states
+
+#### 12.2.2 Cross-browser compatibility
+- **Modern browsers :** Chrome, Firefox, Safari, Edge
+- **Mobile browsers :** iOS Safari, Android Chrome
+- **Feature detection :** Graceful degradation for missing features
+- **Performance testing :** Across different devices
+
+---
+
+## 13. DÉPLOIEMENT ET MAINTENANCE
+
+### 13.1 Stratégie de déploiement
+
+#### 13.1.1 Environment setup
+- **Development :** Local development with Firebase emulators
+- **Staging :** Pre-production testing environment
+- **Production :** Full deployment with monitoring
+- **CI/CD :** Automated deployment pipeline
+
+#### 13.1.2 Configuration management
+```typescript
+// Environment-specific configuration
+const firebaseConfig = {
+  development: {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY_DEV,
+    authDomain: "skinvision-dev.firebaseapp.com",
+    // ...
+  },
+  production: {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY_PROD,
+    authDomain: "skinvision-ai.firebaseapp.com",
+    // ...
+  }
+};
+```
+
+### 13.2 Monitoring et observabilité
+
+#### 13.2.1 Application monitoring
+- **Error tracking :** Sentry ou équivalent pour tracking erreurs
+- **Performance monitoring :** Web Vitals et métriques React
+- **User analytics :** Google Analytics ou Firebase Analytics
+- **Real-time alerts :** Notifications en cas de problème
+
+#### 13.2.2 Infrastructure monitoring
+- **Firebase quotas :** Monitoring des limites de service
+- **Storage usage :** Suivi de l'utilisation du stockage
+- **Authentication metrics :** Taux de connexion/échec
+- **API response times :** Monitoring des performances backend
+
+---
+
+## 14. ÉVOLUTIONS FUTURES ET ROADMAP
+
+### 14.1 Améliorations techniques
+
+#### 14.1.1 Architecture microservices
+- **Service mesh :** Migration vers architecture microservices
+- **Container deployment :** Docker et Kubernetes
+- **API Gateway :** Centralisation et gestion des APIs
+- **Service discovery :** Découverte automatique de services
+
+#### 14.1.2 AI/ML improvements
+- **Model versioning :** Gestion des versions de modèles
+- **A/B testing :** Tests de performance entre modèles
+- **Real-time learning :** Apprentissage continu des modèles
+- **Ensemble methods :** Combinaison de modèles pour meilleure précision
+
+### 14.2 Nouvelles fonctionnalités
+
+#### 14.2.1 Fonctionnalités médicales avancées
+- **DICOM support :** Import de fichiers médicaux standards
+- **Timeline tracking :** Suivi longitudinal des lésions
+- **Multi-modal analysis :** Analyse combinée image + données cliniques
+- **Collaborative reviews :** Système de revue par pairs
+
+#### 14.2.2 Intégrations externes
+- **EHR integration :** Intégration dossiers médicaux électroniques
+- **Telemedicine :** Consultation à distance intégrée
+- **Laboratory results :** Intégration résultats de laboratoire
+- **Prescription system :** Système de prescription intégré
+
+---
+
+## 15. CONCLUSION ET IMPACT
+
+### 15.1 Achievements techniques complets
+
+✅ **Classification automatique** de 40+ types de lésions avec IA  
+✅ **Interface moderne** et intuitive avec glassmorphism  
+✅ **Intégration IA** multi-modèles (ResNet50, InceptionV3)  
+✅ **Chat intelligent** avec vision GPT-4o et analyse médicale  
+✅ **Génération de rapports** PDF médicaux automatisés  
+✅ **Benchmarking complet** des performances modèles  
+✅ **Architecture cloud-native** scalable et sécurisée  
+✅ **Authentification complète** Firebase (Email/Password + Google OAuth)  
+✅ **Stockage cloud** pour images et rapports PDF  
+✅ **Base de données Firestore** pour historique complet  
+✅ **Interface d'historique** avec gestion complète des scans  
+✅ **Téléchargement PDF** robuste avec fallbacks multiples  
+✅ **Gestion d'erreurs** comprehensive avec recovery automatique  
+✅ **Monitoring et debugging** intégrés pour maintenance  
+
+### 15.2 Innovation et contribution technique
+
+#### 15.2.1 Innovations architecturales
+- **Full-stack IA médicale :** Intégration complète frontend/backend/cloud
+- **Multi-modal AI :** Combinaison vision par ordinateur + NLP médical
+- **Error-resilient design :** Architecture résistante aux pannes avec fallbacks
+- **Real-time collaboration :** Synchronisation temps réel via Firebase
+
+#### 15.2.2 Contribution au domaine médical
+- **Démocratisation IA :** Accès simplifié aux outils d'IA médicale
+- **Interface professionnelle :** Design adapté aux professionnels de santé
+- **Traçabilité complète :** Historique et audit trail pour usage médical
+- **Standards médicaux :** Respect des formats et codes médicaux
+
+### 15.3 Compétences techniques développées
+
+#### 15.3.1 Stack technique complète
+- **Frontend moderne :** Next.js 15, React 19, TypeScript avancé
+- **Backend robuste :** Flask, PyTorch, API RESTful design
+- **Cloud computing :** Firebase ecosystem (Auth, Firestore, Storage)
+- **Intelligence artificielle :** Deep learning, computer vision, NLP
+- **DevOps :** Déploiement, monitoring, gestion d'erreurs
+
+#### 15.3.2 Soft skills et méthodologie
+- **Architecture logicielle :** Design patterns, clean architecture
+- **Gestion de projet :** Développement itératif, debugging systématique
+- **Documentation technique :** Spécifications complètes et maintien
+- **Sécurité :** Best practices pour applications médicales
+
+### 15.4 Impact professionnel et académique
+
+Ce projet de fin d'études représente une réalisation technique complète qui démontre :
+
+- **Maîtrise technique :** Stack moderne full-stack avec IA
+- **Vision produit :** Application complète prête pour production
+- **Qualité logicielle :** Code maintenable avec tests et documentation
+- **Innovation :** Utilisation créative des technologies émergentes
+- **Pertinence métier :** Réponse à un besoin réel du domaine médical
+
+Le projet constitue un atout majeur pour une carrière en développement logiciel, intelligence artificielle appliquée, et technologies de la santé.
+
+---
+
+**Technologies utilisées :** Next.js, React, TypeScript, Firebase (Auth/Firestore/Storage), Flask, PyTorch, Chart.js, jsPDF, OpenAI GPT-4o, TailwindCSS, CSS Modules
+
+**Architecture :** Full-Stack Cloud-Native avec microservices et IA intégrée
+
+**Domaines :** Intelligence Artificielle, Vision par Ordinateur, Applications Médicales, Cloud Computing, Interface Utilisateur Moderne
+
+**Date de réalisation :** 2025  
+**Contexte :** Projet de Fin d'Études (PFE) - Version Complète  
+**Statut :** Complet, testé et opérationnel avec fonctionnalités avancées

@@ -1,111 +1,97 @@
-# SkinVision-AI Quick Start Guide
+# SkinVision AI 🩺🤖
 
-## 🚨 IMPORTANT: Fix for "Internal Server Error"
+SkinVision AI is a web-based application designed to provide AI-powered analysis of skin lesions. Users can upload an image of a skin lesion, and the application will use a deep learning model to classify it and provide detailed predictions. The app features an interactive chat assistant to help users understand their results and a secure system for saving scan history.
 
-The "Internal Server Error" on the model-selection page happens because the **Flask backend server is not running**. The application needs both servers to work:
+## ✨ Features
 
-- **Frontend (Next.js)**: http://localhost:3000 ✅ (Already running)
-- **Backend (Flask)**: http://localhost:5000 ❌ (Needs to be started)
+- **🖼️ Image Upload & Analysis**: Upload images of skin lesions for analysis by state-of-the-art deep learning models (ResNet50 and InceptionV3).
+- **📊 Detailed Results**: View the top prediction with a confidence score and a chart of other potential classifications.
+- **🤖 AI Chat Assistant**: An interactive chat powered by OpenAI's GPT-4o allows users to ask questions about their analysis results in natural language.
+- **📄 PDF Report Generation**: Generate and download a professional medical report summarizing the analysis.
+- **🔒 User Authentication & History**: Secure user authentication with Firebase, allowing users to save and review their past scan history.
+- **☁️ Cloud Storage**: All scan data, including images and PDF reports, are securely stored in Firebase Cloud Storage.
 
-## 🚀 Quick Start (Recommended)
+## 🛠️ Tech Stack
 
-### Option 1: Use the Startup Script
-1. Double-click `start-app.bat` in the main folder
-2. This will automatically:
-   - Install Python dependencies
-   - Start the Flask backend server
-   - Start the Next.js frontend server
-3. Wait for both servers to start
-4. Go to http://localhost:3000
+- **Frontend**:
+  - [Next.js](https://nextjs.org/) – React Framework
+  - [TypeScript](https://www.typescriptlang.org/) – Typed JavaScript
+  - [React](https://reactjs.org/) – UI Library
+  - [Chart.js](https://www.chartjs.org/) – for data visualization
+  - [Tailwind CSS](https://tailwindcss.com/) – for styling
+  - [Firebase SDK](https://firebase.google.com/docs/web/setup) – for authentication and cloud services
 
-### Option 2: Manual Setup
+- **Backend**:
+  - [Python](https://www.python.org/)
+  - [Flask](https://flask.palletsprojects.com/) – Web Framework
+  - [PyTorch](https://pytorch.org/) – Deep Learning Framework
 
-#### Step 1: Start Backend Server
-```bash
-# Open terminal in the project root
-cd backend
+- **Database & Storage**:
+  - [Firebase Firestore](https://firebase.google.com/docs/firestore) – NoSQL Database for user data and scan history
+  - [Firebase Storage](https://firebase.google.com/docs/storage) – for image and PDF uploads
 
-# Install Python dependencies (first time only)
-pip install -r requirements.txt
+- **AI Services**:
+  - [OpenAI API (GPT-4o)](https://openai.com/api/) – for the AI chat assistant and report generation
 
-# Start Flask server
-python app.py
-```
+## 🚀 Getting Started
 
-You should see:
-```
-* Running on http://127.0.0.1:5000
-* Debug mode: on
-```
+### Prerequisites
 
-#### Step 2: Start Frontend Server (in a new terminal)
-```bash
-cd frontend
-npm run dev
-```
+- [Node.js](httpss://nodejs.org/en/) (v18.x or later)
+- [Python](https://www.python.org/downloads/) (v3.10 or later)
+- `pip` and `virtualenv` for Python package management
+- A [Firebase](https://firebase.google.com/) project with Authentication, Firestore, and Storage enabled.
+- An [OpenAI API Key](https://platform.openai.com/api-keys).
 
-#### Step 3: Test Both Servers
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000/api/models
+### Installation & Setup
 
-## ✅ Verification
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/SkinVision-AI.git
+    cd SkinVision-AI
+    ```
 
-### Test Backend is Working
-Go to: http://localhost:5000/api/models
+2.  **Backend Setup:**
+    ```bash
+    cd backend
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    pip install -r requirements.txt
+    ```
 
-You should see JSON data with available models:
-```json
-[
-  {
-    "id": "resnet50",
-    "name": "ResNet50",
-    "description": "Excellent for general skin lesion classification...",
-    "accuracy": "92.5%"
-  }
-]
-```
+3.  **Frontend Setup:**
+    ```bash
+    cd ../frontend
+    npm install
+    ```
 
-### Test Full Application Flow
-1. Go to http://localhost:3000
-2. Login/Register with your account
-3. Upload an image
-4. Fill patient information
-5. Select a model → Should now work without errors!
-6. View results and save to history
+4.  **Environment Variables:**
+    - Create a `.env.local` file in the `frontend` directory and add your Firebase project configuration and other keys.
+    - Configure your OpenAI API key within the application settings.
 
-## 🔧 Troubleshooting
+### Running the Application
 
-### "Internal Server Error" Still Appearing?
-- Make sure Flask server is running: `python app.py` in the backend folder
-- Check if port 5000 is available
-- Look for error messages in the Flask terminal
+1.  **Start the Backend Server:**
+    ```bash
+    cd backend
+    source venv/bin/activate
+    python app.py
+    ```
+    The backend will be running at `http://localhost:5000`.
 
-### Python Dependencies Issues?
-```bash
-pip install Flask Flask-CORS Pillow numpy torch torchvision
-```
+2.  **Start the Frontend Development Server:**
+    ```bash
+    cd frontend
+    npm run dev
+    ```
+    The frontend will be running at `http://localhost:3000`.
 
-### Can't Find Python/Pip?
-- Install Python from https://python.org
-- Make sure "Add Python to PATH" is checked during installation
+## Usage
 
-## 📝 What Was Fixed
-
-1. **Added error handling**: Frontend now shows helpful messages when backend is offline
-2. **Fallback models**: Basic models available even without backend
-3. **Clear error messages**: Users know exactly what to do when backend is missing
-4. **Startup script**: One-click solution to start both servers
-5. **Requirements file**: All Python dependencies listed
-
-## 🎯 Normal Application Flow
-
-Once both servers are running:
-1. **Authentication**: Login/register with medical profile
-2. **Image Upload**: Select skin lesion image
-3. **Patient Info**: Fill patient details (age, gender, scan area, etc.)
-4. **Model Selection**: Choose AI model for analysis
-5. **Analysis**: AI processes the image
-6. **Results**: View predictions with confidence scores
-7. **History**: All scans saved to personal history with notes
-
-The authentication and scan history features are fully working - the only issue was the missing backend server!
+1.  Navigate to `http://localhost:3000`.
+2.  Sign up or log in to your account.
+3.  Go to the "Scan" page to upload an image of a skin lesion.
+4.  Select a model (ResNet50 or InceptionV3) and submit for analysis.
+5.  View the results page with the diagnostic predictions.
+6.  Use the AI chat assistant to ask questions or generate a PDF report.
+7.  View your saved scans in the "History" page.
