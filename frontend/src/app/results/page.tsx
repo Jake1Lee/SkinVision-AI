@@ -1233,17 +1233,28 @@ What specific aspect would you like me to explain?`;
 
     try {
       const entries = Object.entries(analysisResults);
-      const labels: string[] = [];
-      const data: number[] = [];
+      const processedEntries: Array<[string, number]> = [];
 
       entries.forEach(([key, value]) => {
         if (value && typeof value === 'object' && 'probability' in value) {
-          labels.push(key);
-          data.push(typeof value.probability === 'number' ? value.probability : 0);
+          const probability = typeof value.probability === 'number' ? value.probability : 0;
+          processedEntries.push([key, probability]);
         }
       });
 
-      return { labels: labels.sort(), data };
+      // Sort by probability (highest first)
+      processedEntries.sort(([,a], [,b]) => b - a);
+
+      // Check if we're on mobile (this is a simple check, you might want to use a proper hook)
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      
+      // Limit to top 7 results on mobile, all results on desktop
+      const limitedEntries = isMobile ? processedEntries.slice(0, 7) : processedEntries;
+
+      const labels = limitedEntries.map(([key]) => key);
+      const data = limitedEntries.map(([, probability]) => probability);
+
+      return { labels, data };
     } catch (error) {
       console.error('Error processing chart data:', error);
       return { labels: [], data: [] };
@@ -1308,13 +1319,13 @@ What specific aspect would you like me to explain?`;
       x: {
         ticks: {
           color: '#fff',
-          maxRotation: 90,  // Rotate labels vertically
-          minRotation: 45,  // Minimum rotation
-          display: true,    // Force display of all labels
-          autoSkip: false,  // Don't auto-skip labels
-          maxTicksLimit: 50, // Allow up to 50 ticks (more than enough for 40 classes)
+          maxRotation: 90,
+          minRotation: 45,
+          display: true,
+          autoSkip: false,
+          maxTicksLimit: 50,
           font: {
-            size: 10        // Smaller font to fit more labels
+            size: 10
           }
         },
         grid: {
@@ -1444,7 +1455,7 @@ What specific aspect would you like me to explain?`;
          data.datasets && data.datasets[0] && data.datasets[0].data && 
          data.datasets[0].data.length > 0 && (
           <div className={styles.chartContainer}>
-            <div style={{ position: 'relative', height: '400px', width: '100%' }}>
+            <div className={styles.chartWrapper}>
               <ChartErrorBoundary>
                 <Bar data={data} options={options} />
               </ChartErrorBoundary>

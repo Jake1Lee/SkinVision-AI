@@ -5,14 +5,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePathname } from 'next/navigation';
 import AuthForm from './AuthForm';
-import { FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
   const { currentUser, logout } = useAuth();
   const [showAuthForm, setShowAuthForm] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   const handleLogout = async () => {
@@ -30,16 +32,19 @@ const Navbar = () => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
     };
 
-    if (showUserMenu) {
+    if (showUserMenu || isMobileMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showUserMenu]);
+  }, [showUserMenu, isMobileMenuOpen]);
 
   return (
     <>
@@ -49,13 +54,25 @@ const Navbar = () => {
             <Link href="/" className={`${styles.homeButton} ${pathname === '/' ? styles.active : ''}`}>
               SkinVision AI
             </Link>
-            <Link href="/benchmarking" className={`${styles.navButton} ${pathname === '/benchmarking' ? styles.active : ''}`}>
-              Benchmarking
-            </Link>
-            <Link href="/about" className={`${styles.aboutButton} ${pathname === '/about' ? styles.active : ''}`}>
-              About
-            </Link>
+            
+            {/* Desktop Navigation Links */}
+            <div className={styles.desktopNav}>
+              <Link href="/benchmarking" className={`${styles.navButton} ${pathname === '/benchmarking' ? styles.active : ''}`}>
+                Benchmarking
+              </Link>
+              <Link href="/about" className={`${styles.aboutButton} ${pathname === '/about' ? styles.active : ''}`}>
+                About
+              </Link>
+            </div>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className={styles.mobileMenuButton}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
 
           <div className={styles.rightSection}>
             {currentUser ? (
@@ -97,6 +114,26 @@ const Navbar = () => {
             )}
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className={styles.mobileMenu} ref={mobileMenuRef}>
+            <Link 
+              href="/benchmarking" 
+              className={`${styles.mobileNavButton} ${pathname === '/benchmarking' ? styles.active : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Benchmarking
+            </Link>
+            <Link 
+              href="/about" 
+              className={`${styles.mobileNavButton} ${pathname === '/about' ? styles.active : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              About
+            </Link>
+          </div>
+        )}
       </nav>
 
       {showAuthForm && (

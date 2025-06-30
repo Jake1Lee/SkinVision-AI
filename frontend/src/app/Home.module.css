@@ -2,4 +2,20 @@
   background-color: #f1f1f1;
   padding: 1.5rem 2rem;
   font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.uploadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .uploadButton {
+    padding: 1.2rem 1.5rem;
+    font-size: 1.2rem;
+    width: 100%;
+    max-width: 280px;
+  }
 }

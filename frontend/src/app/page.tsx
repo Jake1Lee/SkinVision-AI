@@ -73,11 +73,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
-      <h1 className="text-7xl font-bold mb-8 text-purple-800" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
+      <h1 className="text-4xl md:text-7xl font-bold mb-6 md:mb-8 text-purple-800 text-center" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
         SkinVision AI
       </h1>
-      <h2 className="text-4xl font-bold mb-8 text-purple-800" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
+      <h2 className="text-xl md:text-4xl font-bold mb-6 md:mb-8 text-purple-800 text-center px-4" style={{ fontFamily: 'Red Rose', fontWeight: 600 }}>
          Upload image of skin to classify it
       </h2>
       <GlassCard>
@@ -90,7 +90,7 @@ export default function Home() {
           disabled={uploading}
         />
         <button
-          className={`${styles.uploadButton} bg-white text-purple-800 font-bold py-6 px-8 rounded-xl focus:outline-none focus:shadow-outline text-2xl`}
+          className={`${styles.uploadButton} bg-white text-purple-800 font-bold py-4 md:py-6 px-6 md:px-8 rounded-xl focus:outline-none focus:shadow-outline text-xl md:text-2xl`}
           onClick={handleUploadButtonClick}
           disabled={uploading}
         >

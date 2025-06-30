@@ -24,6 +24,8 @@
   display: inline-block;
   color: #fff;
   cursor: pointer;
+  margin-left: 8px;
+  flex-shrink: 0;
 }
 
 .tooltip {
@@ -50,54 +52,258 @@
   opacity: 1;
 }
 
+/* Submit Button Styling */
+.submitButton {
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: auto;
+}
+
+.submitButton:hover {
+  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(110, 72, 170, 0.4);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Desktop Layout - Perfectly Symmetrical */
 .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0; /* Removed side padding to eliminate outer margins */
   gap: 20px;
-  align-items: start;
+}
+
+.topCardsContainer {
+  display: flex;
+  width: 100%;
+  gap: 0; /* Remove gap, we'll handle spacing manually */
+  justify-content: space-between; /* Distribute cards to edges */
+  align-items: stretch;
+}
+
+.topCard {
+  width: calc(50% - 10px); /* Each card takes 50% minus 10px for gap */
+  aspect-ratio: 4/3; /* Desktop 4:3 ratio for better proportions */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make GlassCard component fill the topCard container */
+.topCard > :global(*) {
+  height: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important; /* Center content vertically */
 }
 
 .imageContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 400px; /* Fixed width */
-  height: 300px; /* Fixed height */
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+.imageContainer img {
+  max-width: 85%;
+  max-height: 85%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .modelSelectionContainer {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center; /* Center the content vertically */
+  align-items: center; /* Center the content horizontally */
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  gap: 0; /* Remove gap between h1 and div */
 }
 
 .modelSelectionCard {
-  width: 440px !important;
-  height: 340px !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center; /* Center all content */
+  align-items: center; /* Center all content horizontally */
 }
 
-/* Patient Data Card Styles */
+/* Make the h1 and model selection content stick together */
+.modelSelectionCard h1 {
+  margin-bottom: 0 !important; /* Remove default margin */
+}
+
+.modelSelectionCard .modelSelectionContainer {
+  margin-top: 10px; /* Small gap between title and content */
+}
+
+/* Patient Data takes full width to match top cards combined width */
 .patientDataContainer {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
+  width: 100%;
+  margin-top: 0;
 }
 
 .patientDataCard {
-  width: 900px !important;
-  min-height: 300px !important;
+  width: 100%; /* Full width to match the top cards container */
+  min-height: 300px;
+}
+
+/* Model selection styling */
+.modelList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex: 1;
+  width: 100%;
+}
+
+.modelItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0; /* Prevent flex item from overflowing */
+}
+
+.modelItem label {
+  color: #fff;
+  font-weight: bold;
+  flex: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0; /* Allow text to wrap if needed */
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.modelItem input[type="radio"] {
+  margin-right: 8px;
+  flex-shrink: 0; /* Prevent radio button from shrinking */
+}
+
+/* Ensure top cards fill their containers properly */
+.topCard > .glassCard,
+.topCard > * {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile Layout */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: none;
+    padding: 0 10%;
+    margin: 0;
+  }
+  
+  .topCardsContainer {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .topCard {
+    width: 100%;
+    aspect-ratio: unset; /* Remove aspect ratio on mobile */
+    min-height: 250px; /* Set minimum height instead */
+  }
+  
+  .imageContainer {
+    min-height: 200px;
+  }
+  
+  .imageContainer img {
+    max-width: 100%;
+    max-height: 200px; /* Adjusted for mobile padding */
+    border-radius: 6px;
+  }
+  
+  .modelSelectionCard {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    min-height: 250px;
+  }
+  
+  .patientDataContainer {
+    margin-top: 0;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .patientDataCard {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .modelItem {
+    padding: 15px 12px;
+    font-size: 0.95rem;
+  }
+  
+  .modelItem label {
+    font-size: 0.9rem;
+  }
+  
+  .tooltip {
+    width: 200px;
+    margin-left: -100px;
+    font-size: 0.8rem;
+  }
+  
+  .submitButton {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+  }
 }
 
 .patientForm {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 .formRow {
   display: flex;
   gap: 20px;
   align-items: flex-start;
+  width: 100%;
 }
 
 .formGroup {
@@ -105,6 +311,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0; /* Allow flex items to shrink */
 }
 
 .label {
@@ -121,6 +328,8 @@
   color: white;
   font-size: 0.9rem;
   transition: border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .input:focus, .select:focus {
@@ -149,6 +358,8 @@
   min-height: 80px;
   transition: border-color 0.3s ease;
   font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .textarea:focus {
@@ -165,6 +376,7 @@
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  width: 100%;
 }
 
 .saveButton {
@@ -189,22 +401,28 @@
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
 }
 
-/* Responsive Design for Patient Form */
+/* Mobile Form Responsive Design */
 @media (max-width: 768px) {
-  .patientDataCard {
-    width: calc(100vw - 40px) !important;
-    max-width: 500px !important;
-  }
-  
   .formRow {
     flex-direction: column;
     gap: 16px;
   }
   
-  .patientDataContainer {
-    margin-top: 15px;
-    padding: 0 10px;
+  .formGroup {
+    width: 100%;
+  }
+  
+  .input, .select, .textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 
-/* Image card should remain at default GlassCard size, only inner container is controlled above */
+/* Override GlassCard padding for better image centering */
+.topCard .imageContainer {
+  /* Ensure proper centering within the GlassCard */
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
