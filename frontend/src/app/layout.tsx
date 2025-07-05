@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import ClientOnly from "@/components/ClientOnly";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
@@ -27,11 +28,14 @@ export default function RootLayout({
           fontFamily: 'Dosis', 
           fontWeight: 400 
         }}
+        suppressHydrationWarning
       >
-        <AuthProvider>
-          <Navbar />
-          {children}
-        </AuthProvider>
+        <ClientOnly fallback={<div>Loading...</div>}>
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
+        </ClientOnly>
       </body>
     </html>
   );

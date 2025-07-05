@@ -70,7 +70,7 @@ const BenchmarkingPage = () => {
             </div>
             
             <p className={styles.analysisText}>
-              The confusion matrix visualization reveals ResNet50's impressive classification capabilities across the 40 different skin lesion types. 
+              The confusion matrix visualization reveals ResNet50&apos;s impressive classification capabilities across the 40 different skin lesion types. 
               The strong diagonal pattern indicates that the model correctly identifies most lesions, with particularly excellent performance on common 
               classes like melanocytic nevi (nv) and seborrheic keratoses (bkl). The matrix shows minimal off-diagonal scatter, suggesting that 
               misclassifications are relatively rare and often between visually similar lesion types. This high-quality performance makes ResNet50 
@@ -152,11 +152,11 @@ const BenchmarkingPage = () => {
             </div>
             
             <p className={styles.analysisText}>
-              The InceptionV3 confusion matrix tells a concerning story of undertraining and poor generalization. Unlike ResNet50's clean diagonal 
+              The InceptionV3 confusion matrix tells a concerning story of undertraining and poor generalization. Unlike ResNet50&apos;s clean diagonal 
               pattern, this matrix shows heavy concentration along just a few rows, indicating that the model has learned to predict only a small 
               subset of the 40 classes. The sparse diagonal and dense horizontal lines suggest the model is defaulting to predicting the most 
               common classes regardless of the actual input. This behavior is characteristic of insufficient training time (only 2 epochs compared 
-              to ResNet50's 250) and highlights the critical importance of adequate training duration for complex multi-class classification tasks 
+              to ResNet50&apos;s 250) and highlights the critical importance of adequate training duration for complex multi-class classification tasks 
               in medical imaging.
             </p>
             
@@ -218,9 +218,9 @@ const BenchmarkingPage = () => {
           </div>
           
           <p className={styles.analysisText}>
-            The global performance metrics chart demonstrates ResNet50's exceptional balance across all key evaluation criteria. With values 
+            The global performance metrics chart demonstrates ResNet50&apos;s exceptional balance across all key evaluation criteria. With values 
             consistently above 86% for accuracy, precision, recall, and F1-score, the model shows remarkable consistency that is crucial for 
-            medical applications. The tight clustering of these metrics around 87% indicates that the model doesn't sacrifice one metric for 
+            medical applications. The tight clustering of these metrics around 87% indicates that the model doesn&apos;t sacrifice one metric for 
             another - it maintains high precision (minimizing false positives) while achieving high recall (catching most true cases). This 
             balanced performance is particularly important in dermatological applications where both missed diagnoses and false alarms can 
             have significant clinical consequences. The Top-3 and Top-5 accuracy metrics (99.14% and 99.78% respectively) provide additional 
@@ -266,7 +266,7 @@ const BenchmarkingPage = () => {
           </div>
           
           <p className={styles.analysisText}>
-            This class-wise F1-score analysis reveals fascinating insights into ResNet50's learning patterns. The chart shows that approximately 
+            This class-wise F1-score analysis reveals fascinating insights into ResNet50&apos;s learning patterns. The chart shows that approximately 
             two-thirds of the 40 classes achieve F1-scores above 0.8, with several classes reaching perfect 1.0 scores. Interestingly, some of 
             the highest-performing classes are actually rare lesion types, suggesting that when these classes have sufficient distinctive features, 
             the model can learn them exceptionally well despite limited samples. The gradual decline rather than a sharp drop-off indicates robust 
@@ -305,9 +305,9 @@ const BenchmarkingPage = () => {
           </div>
           
           <p className={styles.analysisText}>
-            The InceptionV3 global performance metrics paint a stark contrast to ResNet50's excellence, with all key metrics falling well below 
+            The InceptionV3 global performance metrics paint a stark contrast to ResNet50&apos;s excellence, with all key metrics falling well below 
             acceptable levels for medical applications. The dramatic gap between accuracy (43.64%) and precision (29.29%) indicates severe class 
-            imbalance handling issues, where the model's predictions are not only often wrong but also heavily biased toward common classes. 
+            imbalance handling issues, where the model&apos;s predictions are not only often wrong but also heavily biased toward common classes. 
             The low F1-score (27.55%) reflects the compound effect of poor precision and recall, suggesting fundamental learning failures rather 
             than simple overfitting. These metrics collectively indicate that the InceptionV3 model requires substantial retraining with proper 
             hyperparameter tuning, longer training duration, and potentially architectural modifications to achieve clinical utility.
@@ -418,9 +418,9 @@ const BenchmarkingPage = () => {
             </div>
             
             <p className={styles.analysisText}>
-              This scatter plot reveals a complex relationship between sample count and performance that defies simple correlation. While there's 
+              This scatter plot reveals a complex relationship between sample count and performance that defies simple correlation. While there&apos;s 
               a general trend of better performance with more samples, notable exceptions exist where rare classes achieve perfect or near-perfect 
-              F1-scores. This suggests that sample count alone doesn't determine classification success - the distinctiveness of visual features 
+              F1-scores. This suggests that sample count alone doesn&apos;t determine classification success - the distinctiveness of visual features 
               plays a crucial role. Some rare lesions may have unique characteristics that make them easily separable, while common lesions with 
               high visual variability may prove more challenging despite abundant training data. The presence of high-performing rare classes 
               offers hope that with careful data curation and feature engineering, even uncommon conditions can be accurately diagnosed by AI systems.
@@ -531,7 +531,7 @@ const BenchmarkingPage = () => {
             </div>
             
             <p className={styles.analysisText}>
-              The InceptionV3 precision-recall plot starkly illustrates the model's failure to achieve meaningful performance across the class 
+              The InceptionV3 precision-recall plot starkly illustrates the model&apos;s failure to achieve meaningful performance across the class 
               spectrum. With most points clustered at the origin (0,0), the visualization shows that the vast majority of classes achieve 
               neither precision nor recall, indicating complete classification failure for these lesion types. The few scattered points away 
               from the origin represent the limited classes where the model shows some learning, but even these fall far short of clinically 
@@ -569,12 +569,12 @@ const BenchmarkingPage = () => {
             </div>
             
             <p className={styles.analysisText}>
-              The confidence score distribution for ResNet50 reveals a model that "knows what it knows" - a critical characteristic for medical 
+              The confidence score distribution for ResNet50 reveals a model that &quot;knows what it knows&quot; - a critical characteristic for medical 
               AI systems. The heavily right-skewed distribution with most predictions above 0.8 confidence indicates that the model makes 
               decisive, high-confidence predictions rather than uncertain guesses. This pattern is particularly valuable in clinical settings 
               where healthcare providers need to trust AI recommendations. The clear separation between correct and incorrect prediction 
               confidence levels (90.02% vs 66.69% average) suggests that the confidence scores can serve as a reliable indicator of prediction 
-              quality, enabling clinicians to appropriately weight AI suggestions based on the model's own uncertainty assessment.
+              quality, enabling clinicians to appropriately weight AI suggestions based on the model&apos;s own uncertainty assessment.
             </p>
             
             <p>
